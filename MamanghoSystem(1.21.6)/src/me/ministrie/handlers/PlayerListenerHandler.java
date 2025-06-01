@@ -52,6 +52,7 @@ public class PlayerListenerHandler implements Listener{
 					return;
 				}
 				MamanghoSystem.getPlayerManager().cachePlayer(player);
+				MessageSetting.SYSTEM_JOIN_MESSAGES.sendMessages(p);
 				Bukkit.broadcast(ComponentUtil.translatiableFrom("multiplayer.player.joined", player.getDisplaynameWithPrefix()).color(TextColor.fromHexString("#faf219")));
 				
 				String url = ServerSetting.RESOURCEPACK_URL.getValue();

@@ -10,6 +10,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChainFactory;
 import me.ministrie.commands.AdminCommand;
+import me.ministrie.commands.HelpCommand;
 import me.ministrie.commands.NicknameChangeCommand;
 import me.ministrie.commands.ShareLocationCommand;
 import me.ministrie.configs.BiomeInformation;
@@ -43,6 +44,7 @@ public class MamanghoSystem extends JavaPlugin{
 		this.getCommand("system").setExecutor(new AdminCommand());
 		this.getCommand("namechange").setExecutor(new NicknameChangeCommand());
 		this.getCommand("sharelocation").setExecutor(new ShareLocationCommand());
+		this.getCommand("help").setExecutor(new HelpCommand());
 		ConfigurationSerialization.registerClass(EmoticonBookmark.class);
 		Bukkit.getPluginManager().registerEvents(new PlayerListenerHandler(), this);
 		ServerSetting.load();

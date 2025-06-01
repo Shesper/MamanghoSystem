@@ -29,6 +29,7 @@ public enum MessageSetting{
 	CHAT_TABLIST_NORMAL_PING_COLOR("messages.chat.tablist.normal-ping-color", "#f7ef05"),
 	CHAT_TABLIST_WARNING_PING_COLOR("messages.chat.tablist.warning-ping-color", "#b30909"),
 	
+	SYSTEM_JOIN_MESSAGES("system.messages.join-messages", "[{\"text\": \"총갤 마망호 서버에 입장하였습니다.\", \"color\": \"white\"},{\"text\": \"\n\"},{\"text\": \"마망호에 관한 이용 준수 사항 및, 추가된 컨텐츠에 대해선 \"},{\"text\": \"여기\", \"color\": \"#89eb34\", \"bold\": \"true\", \"italic\": \"true\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": \"클릭 시 총갤 마망호 노션 페이지로 이동합니다.\"}, \"clickEvent\": {\"action\": \"open_url\", \"value\": \"https://www.notion.so/2055bcfc69f280a0a8a1e8323d6c629f?source=copy_link\"}},{\"text\": \"를 클릭하여 노션을 확인해주세요.\", \"color\": \"white\"},{\"text\": \"\n\"},{\"text\": \"주기적인 마망호 업데이트 내용도 담겨있습니다.\", \"color\": \"white\"}]"),
 	SYSTEM_NAMECHANGE_COMMAND_GUIDE("system.messages.namechange.command-guide", "/namechange [변경할 닉네임]"),
 	SYSTEM_NAMECHANGE_OVER_LENGTH("system.messages.namechange.name-over-length", "닉네임은 최대 {0}자 까지 설정 가능합니다."),
 	SYSTEM_NAMECHANGE_CHANGED("system.messages.namechange.changed", "닉네임이 변경되었습니다. 변경된 닉네임: {0}"),

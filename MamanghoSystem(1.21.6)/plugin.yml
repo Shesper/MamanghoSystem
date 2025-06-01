@@ -16,3 +16,6 @@ commands:
   sharelocation:
     description: share location command
     aliases: [위치공유]
+  help:
+    description: help command
+    aliases: [도움말]
