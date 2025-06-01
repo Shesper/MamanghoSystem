@@ -92,6 +92,7 @@ public class PlayerListenerHandler implements Listener{
 	
 	@EventHandler(priority=EventPriority.MONITOR)
 	public void onChat(AsyncChatEvent event){
+		if(event.isCancelled()) return;
 		event.setCancelled(true);
 		Player player = event.getPlayer();
 		MamanghoPlayer user = MamanghoSystem.getPlayerManager().getPlayer(player);
