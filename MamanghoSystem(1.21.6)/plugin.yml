@@ -3,8 +3,8 @@ main: me.ministrie.main.MamanghoSystem
 author: Ministrie
 authors: [최태성, Ministrie]
 version: 1.0.0
-depend: [ProtocolLib]
-softdepend: [LuckPerms]
+depend: [ProtocolLib, LuckPerms]
+softdepend: []
 api-version: 1.21
 
 commands:
