@@ -149,7 +149,7 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 		}).asyncLast((users) -> {
 			users.forEach(user -> {
 				user.sendMessage(this.mixinChat(user, msg));
-				for(int i = 0; i < (big ? emoticon.getGab()*2 : emoticon.getGab()); i++){
+				for(int i = 0; i < (big ? emoticon.getGab()*1.5 : emoticon.getGab()); i++){
 					user.sendMessage(Component.space());
 				}
 			});
