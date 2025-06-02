@@ -12,7 +12,9 @@ public interface Screen{
 	
 	public void open(Screen previous);
 	
-	public void close();
+	public default void close(){
+		this.getViewer().getPlayer().closeInventory();
+	}
 	
 	public void refresh();
 	

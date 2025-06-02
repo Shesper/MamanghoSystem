@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.utils.component.ComponentUtil;
 import me.ministrie.utils.string.StringUtils;
 import net.kyori.adventure.text.Component;
@@ -38,6 +39,17 @@ public enum MessageSetting{
 	SYSTEM_SHARE_LOCATION_DISABLE("system.messages.share-location.disable", "위치 공유가 비활성화 되었습니다."),
 	
 	SYSTEM_RESOURCEPACK_PROMPT("system.messages.resourcepack-prompt", "[{\"text\": \"총갤 마망호에 입장하기 위해선 서버에서 제공하는 리소스팩 다운로드가 필수적입니다.\", \"color\": \"#ffffff\"},{\"text\": \"\n\"},{\"text\": \"수락을 눌러 리소스팩 다운로드를 진행해주세요.\", \"color\": \"#ffffff\"},{\"text\": \"\n\"},{\"text\": \"리소스팩 다운로드를 거부할 경우 서버에 접속할 수 없습니다.\", \"color\": \"#e60b00\"}]"),
+	
+	SYSTEM_GUI_CONFLICT_IMAGE_NAME("system.messages.gui.conflict-image-name", "&f입력한 이름은 등록한 이미지 이름들 중 중복된 이름입니다. 다른 이름을 입력해주세요."),
+	
+	SYSTEM_GUI_NOT_ENOUGH_EMPTY_MAP("system.messages.gui.not-enough-empty-map", "&c빈 지도 아이템이 부족합니다."),
+	SYSTEM_GUI_WRITE_IMAGE_NAME_IN_CHAT("system.messages.gui.write-image-name-in-chat", "&f이미지 이름을 채팅창에 입력해주세요. 입력을 취소 하려면 '&c취소&f' 를 입력해주세요."),
+	SYSTEM_GUI_WRITE_IMAGE_URL_IN_CHAT("system.messages.gui.image-url-in-chat", "&f이미지 URL을 채팅창에 입력해주세요. 입력을 취소 하려면 '&c취소&f' 를 입력해주세요."),
+	SYSTEM_GUI_PROCESS_CREATE_IMAGE("system.messages.gui.processing-create-image", "&a이미지를 생성 중입니다. 잠시만 기다려주세요."),
+	SYSTEM_GUI_PROCESSED_CREATE_IMAGE("system.messages.gui.processed-create-image", "&a이미지가 생성되었습니다!"),
+	SYSTEM_GUI_PROCESSED_FAILED_CREATE_IMAGE("system.messages.gui.failed-create-image", "&c이미지 생성에 실패하였습니다. 파일의 크기가 너무 크거나 해당 URL이 국가에서 차단된 링크인지 여부를 확인해주세요."),
+	SYSTEM_GUI_PROCESS_DELETE_IMAGE("system.messages.gui.processing-delete-image", "&f해당 이미지를 삭제하였습니다."),
+	SYSTEM_GUI_PROCESS_FAILED_DELETE_IMAGE("system.messages.gui.processing-failed-delete-image", "&c해당 이미지를 삭제하는데 실패하였습니다. 다시 시도해주세요."),
 	
 	FORMAT_OVERWORLD_TRANSLATE_KEY("format.worlds.overworld-translate-key", "chat.hover.worlds.overworld"),
 	FORMAT_NETHER_TRANSLATE_KEY("format.worlds.nether-translate-key", "chat.hover.worlds.nether"),
@@ -79,6 +91,22 @@ public enum MessageSetting{
 		if(online != null){
 			list.forEach(message -> {
 				if(!message.isEmpty()) online.sendMessage(ComponentUtil.parseComponent(message));
+			});
+		}
+	}
+	
+	public void sendMessages(MamanghoPlayer online, Object... o){
+		if(online != null){
+			String msg = this.getValue(o);
+			if(!msg.isEmpty()) online.getPlayer().sendMessage(ComponentUtil.parseComponent(msg));
+		}
+	}
+	
+	public void sendListMessages(MamanghoPlayer online, Object... o){
+		List<String> list = StringUtils.regexList(cache_values.getOrDefault(this, this.getDefaultValue()), o);
+		if(online != null){
+			list.forEach(message -> {
+				if(!message.isEmpty()) online.getPlayer().sendMessage(ComponentUtil.parseComponent(message));
 			});
 		}
 	}

@@ -134,6 +134,21 @@ public class StringUtils{
 		return list;
 	}
 	
+	public static String mergeString(String[] string){
+		if(string == null || string.length == 0) return "";
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for(String str : string){
+			if(first){
+				sb.append(str);
+				first = false;
+			}else{
+				sb.append(" " + str);
+			}
+		}
+		return sb.toString();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static List<String> regexList(String list_formats, Object... o){
 		

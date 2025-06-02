@@ -1,7 +1,4 @@
 package me.ministrie.gui.types.holders.emoticon;
-
-import org.bukkit.inventory.Inventory;
-
 import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
 import me.ministrie.gui.types.emoticon.EmoticonBookmarkedGui;
@@ -30,11 +27,6 @@ public class EmoticonBookmarkedGuiHolder implements ScreenHolder{
 	@Override
 	public Screen getScreen(){
 		return gui;
-	}
-
-	@Override
-	public Inventory getInventory(){
-		return null;
 	}
 	
 	@Override

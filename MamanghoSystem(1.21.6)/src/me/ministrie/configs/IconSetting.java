@@ -30,12 +30,29 @@ public enum IconSetting{
 	GUI_NEXT_BUTTON("gui.general.next-button", "FEATHER:3", "&f다음 페이지", ""),
 	GUI_PAGE_BUTTON("gui.general.page-button", "FEATHER:4", "&f{0} / {1}", ""),
 	GUI_EMOTICON_BOOKMARK_BUTTON("gui.general.emoticon-bookmark-button", "FEATHER:5", "&f북마크한 디시콘 보기", ""),
+	
 	EMOTICON_ICON("emoticon.icon", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}"),
 	EMOTICON_DETAIL_ICON_UNBOOKMARK("emoticon.detail-icon-unbookmarked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &a즐겨찾기 추가|&fSHIFT+좌클릭: &6더블 콘 사용"),
 	EMOTICON_DETAIL_ICON_BOOKMARKED("emoticon.detail-icon-bookmark", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&fSHIFT+좌클릭: &6더블 콘 사용"),
 	
 	EMOTICON_DETAIL_ICON_UNBOOKMARK_HOOKED("emoticon.detail-icon-unbookmarked-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &a즐겨찾기 추가|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f"),
-	EMOTICON_DETAIL_ICON_BOOKMARKED_HOOKED("emoticon.detail-icon-bookmark-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f");
+	EMOTICON_DETAIL_ICON_BOOKMARKED_HOOKED("emoticon.detail-icon-bookmark-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f"),
+	
+	IMAGE_FRAME_CREATE_IMAGES("image-frame.create-image", "IRON_INGOT:1", "&f이미지 맵 생성", "&f클릭 시 이미지 맵 생성을 시작합니다.|&f플레이어 당 &b{0}&f개의 이미지를 생성할 수 있습니다."),
+	IMAGE_FRAME_MANAGEMENT_MY_IMAGES("image-frame.management-my-image", "IRON_INGOT:2", "&f내 이미지 맵 관리", "&f클릭 시 내가 만든 이미지 맵들을 관리합니다."),
+	
+	IMAGE_FRAME_WIDTH("image-frame.create.width", "IRON_INGOT:3", "&f가로 크기 설정", "&a좌클릭: &d+1 &f가로 크기|&e우클릭: &d-1 &f가로 크기|&f|&f가로 크기: &a{0}|&f|&f최대 {1}까지 가능합니다."),
+	IMAGE_FRAME_HEIGHT("image-frame.create.height", "IRON_INGOT:4", "&f세로 크기 설정", "&a좌클릭: &d+1 &f세로 크기|&e우클릭: &d-1 &f세로 크기|&f|&f세로 크기: &a{0}|&f|&f최대 {1}까지 가능합니다."),
+	IMAGE_FRAME_SIZE_CONFIRM("image-frame.create.size-confirm", "IRON_INGOT:5", "&f이미지 크기 확인", "&f크기: {0} x {1} (가로, 세로)|&f|&f가로x세로 면적 갯수만큼 빈 지도 아이템이|&f필요합니다. ({2}개)|&f|&f해당 크기로 설정하려면 &a우클릭&f하여|&f다음 단계를 진행합니다."),
+	
+	IMAGE_FRAME_MODIFIED_NAME_AFTER("image-frame.modified-name-after", "IRON_INGOT:5", "&f이미지 이름 설정 확인", "&f설정 하려는 이름: {0}|&f|&f이미지 이름을 위와 같이 설정하시겠습니까?|&f다른 이름으로 변경을 원하면 다시 &a좌클릭&f하여|&f변경할 수 있습니다.|&f|&f다음으로 진행하려면 &d우클릭&f해주세요."),
+	IMAGE_FRAME_MODIFIED_NAME_ICON("image-frame.modifiy-name", "IRON_INGOT:6", "&f이미지 이름 설정", "&f클릭 시 채팅 창에 설정할 이름을 입력하여|&f이미지 이름을 설정합니다."),
+	
+	IMAGE_FRAME_URL_AFTER_ICON("image-frame.url-after", "IRON_INGOT:7", "&f이미지 URL 설정 확인", "&f입력된 URL: &a{0}|&f|&f이미지 URL을 위와 같이 설정하시겠습니까?&f다른 URL로 변경을 원하시면 다시 &a좌클릭&f하여|&f변경할 수 있으며, 틀린 곳이 없는지|&f필히 확인해주시기 바랍니다.|&f|&f다음으로 진행하려면 &d우클릭&f해주세요."),
+	IMAGE_FRAME_URL_ICON("image-frame.url", "IRON_INGOT:8", "&f이미지 URL 설정", "&f클릭 시 채팅창에 설정할 이미지 URL을 입력하여|&f출력될 이미지를 설정합니다."),
+	
+	IMAGE_FRAME_RESULT_ICON("image-frame.result", "IRON_INGOT:9", "&f이미지 맵 생성 최종 확인" ,"&f|&f이미지 크기: &a{0} &fx &a{1} &f(가로, 세로)|&f이미지 이름: {2}|&f이미지 URL: &a{3}|&f|&f입력된 정보들입니다.|&f위 정보를 토대로 이미지맵을 생성하려면|&a우클릭&f해주세요."),
+	IMAGE_FRAME_IMG_INFO_ICON("image-frame.image-info", "PAPER:-1", "&f이미지 정보", "&f|&f이미지 아이디: {0}|&f이미지 크기: &a{1} x {2} &f(가로, 세로)|&f이미지 이름: {3}|&f||&a좌클릭: &f이미지 맵 가져오기 (빈 지도 {4}개 필요)|&c우클릭: &f이미지 삭제");
 	
 	public static final NamespacedKey DUMMY_ATTIRUBTE_MODIFIER = NamespacedKey.minecraft("dummy_attribute_modifier");
 	public static final Pair<Attribute, AttributeModifier> DUMMY_ATTRIBUTE = Pair.of(Attribute.LUCK, new AttributeModifier(DUMMY_ATTIRUBTE_MODIFIER, 0.0, Operation.ADD_NUMBER));

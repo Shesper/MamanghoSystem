@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -28,6 +29,7 @@ import me.ministrie.functions.Callback;
 import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
 import me.ministrie.gui.TaskHolder;
+import me.ministrie.gui.proccess.ProcessScreen;
 import me.ministrie.gui.types.emoticon.EmoticonGui;
 import me.ministrie.main.MamanghoSystem;
 import me.ministrie.packet.protocol.ProtocolTools;
@@ -53,7 +55,7 @@ public class PlayerListenerHandler implements Listener{
 				}
 				MamanghoSystem.getPlayerManager().cachePlayer(player);
 				MessageSetting.SYSTEM_JOIN_MESSAGES.sendMessages(p);
-				Bukkit.broadcast(ComponentUtil.translatiableFrom("multiplayer.player.joined", player.getDisplaynameWithPrefix()).color(TextColor.fromHexString("#faf219")));
+				Bukkit.broadcast(ComponentUtil.translatiableFrom("multiplayer.player.joined", player.getDisplaynameWithPrefix("#faf219")).color(TextColor.fromHexString("#faf219")));
 				
 				String url = ServerSetting.RESOURCEPACK_URL.getValue();
 				if(url != null && !url.isEmpty()){
@@ -74,7 +76,7 @@ public class PlayerListenerHandler implements Listener{
 		event.quitMessage(null);
 		MamanghoPlayer player = MamanghoSystem.getPlayerManager().removePlayer(event.getPlayer());
 		if(player != null){
-			Bukkit.broadcast(ComponentUtil.translatiableFrom("multiplayer.player.left", player.getDisplaynameWithPrefix()).color(TextColor.fromHexString("#faf219")));
+			Bukkit.broadcast(ComponentUtil.translatiableFrom("multiplayer.player.left", player.getDisplaynameWithPrefix("#faf219")).color(TextColor.fromHexString("#faf219")));
 		}
 		Player online = event.getPlayer();
 		InventoryView view = online.getOpenInventory();
@@ -90,14 +92,22 @@ public class PlayerListenerHandler implements Listener{
 		event.deathMessage(ComponentUtil.extractTranslatable(event.deathMessage()));
 	}
 	
-	@EventHandler(priority=EventPriority.MONITOR)
+	@EventHandler(priority=EventPriority.LOW)
 	public void onChat(AsyncChatEvent event){
 		if(event.isCancelled()) return;
 		event.setCancelled(true);
 		Player player = event.getPlayer();
 		MamanghoPlayer user = MamanghoSystem.getPlayerManager().getPlayer(player);
 		if(user == null) return;
-		user.say(ComponentUtil.getComponentPlainText(event.message()));
+		String messages = ComponentUtil.getComponentPlainText(event.message());
+		if(user.getProcessScreen() != null){
+			if(messages.equalsIgnoreCase("cancel") || messages.equalsIgnoreCase("취소") || messages.equalsIgnoreCase("cnlth")){
+				user.getProcessScreen().cancelProcess();
+				return;
+			}
+			if(user.getProcessScreen().writeValue(user.getProcessScreen().getProcess(), messages)) return;
+		}
+		user.say(messages);
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
@@ -116,8 +126,10 @@ public class PlayerListenerHandler implements Listener{
 	public void onOpenInventory(InventoryOpenEvent event){
 		Inventory inv = event.getInventory();
 		InventoryHolder holder = inv.getHolder();
-		if(holder != null && holder instanceof TaskHolder task){
-			task.openTask();
+		if(holder != null){
+			if(holder instanceof ScreenHolder sh){
+				sh.openTask();
+			}
 		}
 	}
 	
@@ -126,8 +138,10 @@ public class PlayerListenerHandler implements Listener{
 		Inventory inv = event.getInventory();
 		InventoryHolder holder = inv.getHolder();
 		if(holder != null && holder instanceof ScreenHolder screenHolder){
-			if(screenHolder instanceof TaskHolder task){
-				task.closeTask();
+			screenHolder.closeTask();
+			if(screenHolder.getScreen() instanceof ProcessScreen){
+				MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
+				if(player != null) player.setProcessScreen(null);
 			}
 			if(screenHolder.getScreen().getPreviousScreen() != null && screenHolder.possiblePreviousScreen()){
 				Bukkit.getScheduler().runTask(MamanghoSystem.getInstance(), () -> {
@@ -163,5 +177,10 @@ public class PlayerListenerHandler implements Listener{
 				event.setResult(exclusive.export(event.getResult()));
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onAdvancementDone(PlayerAdvancementDoneEvent event){
+		event.message(ComponentUtil.extractTranslatable(event.message()));
 	}
 }

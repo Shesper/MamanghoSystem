@@ -3,7 +3,7 @@ main: me.ministrie.main.MamanghoSystem
 author: Ministrie
 authors: [최태성, Ministrie]
 version: 1.0.0
-depend: [ProtocolLib, LuckPerms]
+depend: [ProtocolLib, LuckPerms, ImageFrame]
 softdepend: []
 api-version: 1.21
 load: STARTUP
@@ -20,3 +20,9 @@ commands:
   help:
     description: help command
     aliases: [도움말]
+  image:
+    description: image map management command
+    aliases: [이미지, dlalwl, DLALWL]
+  tell:
+    description: player to player messsage command
+    aliases: [w, msg]

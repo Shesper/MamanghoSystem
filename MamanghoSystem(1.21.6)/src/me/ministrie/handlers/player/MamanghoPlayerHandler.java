@@ -17,6 +17,7 @@ import me.ministrie.configs.MessageSetting;
 import me.ministrie.configs.ServerSetting;
 import me.ministrie.emoticon.Emoticon;
 import me.ministrie.functions.Callback;
+import me.ministrie.gui.proccess.ProcessScreen;
 import me.ministrie.handlers.data.player.PlayerDataHandler;
 import me.ministrie.handlers.data.player.PlayerDataHandler.DataEnum;
 import me.ministrie.main.MamanghoSystem;
@@ -36,12 +37,19 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	
 	private static final String DISPALY_EMOJI_FORMAT = ":%s:";
 	private static final String DISPALY_PAIR_EMOJI_FORMAT = ":%s: :%s:";
-	private static final String DISPLAY_FORMAT = "[{\"text\": \"%s\", \"color\": \"#faf219\"},{\"text\": \"%s\", \"color\": \"#ffffff\", \"font\": \"prefix\"}]";
+	private static final String DISPLAY_FORMAT = "[{\"text\": \"%s\", \"color\": \"%s\"},{\"text\": \"%s\", \"color\": \"#ffffff\", \"font\": \"prefix\"}]";
 	private static final String DISPLAY_PLAIN_FORMAT = "%s%s";
 	
 	private Player handler;
 	private User user;
 	private PlayerData data;
+	private ProcessScreen processing;
+	private boolean empty;
+	
+	public MamanghoPlayerHandler(Player handler, boolean emptyConstruct){
+		this.handler = handler;
+		this.empty = true;
+	}
 	
 	public MamanghoPlayerHandler(Player handler){
 		this.handler = handler;
@@ -81,8 +89,8 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	}
 	
 	@Override
-	public Component getDisplaynameWithPrefix(){
-		return ComponentUtil.parseComponent(DISPLAY_FORMAT.formatted(this.getNickname(), this.getPrefix()));
+	public Component getDisplaynameWithPrefix(String hexcolor){
+		return ComponentUtil.parseComponent(DISPLAY_FORMAT.formatted(this.getNickname(), hexcolor, this.getPrefix()));
 	}
 	
 	@Override
@@ -172,7 +180,7 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	}
 	
 	protected Pair<HoverEvent<Component>, ClickEvent> getHoverFor(Player viewer){
-		Component hoverComponent = ComponentUtil.translatiableFrom("chat.hover.targetlocation", this.getDisplaynameWithPrefix());
+		Component hoverComponent = ComponentUtil.translatiableFrom("chat.hover.targetlocation", this.getDisplaynameWithPrefix("#ffffff"));
 		boolean share = this.getData().<Boolean>getData(DataEnum.SHARE_LOCATION);
 		ClickEvent clickevent = null;
 		if(!viewer.isOp() && !share){
@@ -230,5 +238,20 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 		String display = this.getPlainDisplaynameWithPrefix();
 		if(display.length() > 16) display = display.substring(0, 16);
 		ProtocolTools.setFakeAboveName(this, display);
+	}
+
+	@Override
+	public ProcessScreen getProcessScreen(){
+		return processing;
+	}
+
+	@Override
+	public void setProcessScreen(ProcessScreen screen){
+		this.processing = screen;
+	}
+
+	@Override
+	public boolean isEmpty(){
+		return empty;
 	}
 }
