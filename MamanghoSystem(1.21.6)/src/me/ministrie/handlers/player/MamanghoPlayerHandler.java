@@ -165,7 +165,7 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 				if(this.getCustomNickname() != null){
 					this.handler.displayName(ComponentUtil.parseComponent(this.getCustomNickname()));
 				}
-				Bukkit.getLogger().log(Level.INFO, "[MamanghoSystem] player data loaded. " + (System.currentTimeMillis()-time) + "ms.");
+				Bukkit.getLogger().log(Level.INFO, "[MamanghoSystem] player '" + handler.getName() + "' data loaded. " + (System.currentTimeMillis()-time) + "ms.");
 				callback.done(this, null);	
 			}catch(Exception e){
 				callback.done(this, e);	

@@ -38,11 +38,18 @@ public class PlayerManager{
 	}
 	
 	public MamanghoPlayer removePlayer(Player player){
-		return this.caches.remove(player.getUniqueId());
+		MamanghoPlayer user = this.caches.remove(player.getUniqueId());
+		if(user != null){
+			user.getData().saveGracefully();
+		}
+		return user;
 	}
 	
 	public void removePlayerShutdown(Player player){
-		this.caches.remove(player.getUniqueId());
+		MamanghoPlayer user = this.caches.remove(player.getUniqueId());
+		if(user != null){
+			user.getData().saveShutdown();
+		}
 	}
 	
 	public MamanghoPlayer getPlayer(Player player){

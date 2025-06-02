@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import me.ministrie.api.data.player.PlayerData;
 import me.ministrie.emoticon.EmoticonBookmark;
+import me.ministrie.handlers.data.SaveTaskManager;
 
 public class PlayerDataHandler implements PlayerData{
 
@@ -73,11 +74,20 @@ public class PlayerDataHandler implements PlayerData{
 	
 	private File dataFile;
 	private YamlConfiguration dataSection;
+	private int id;
+	private SaveTaskManager saveTask;
 	
 	private ConcurrentMap<DataEnum, Object> datas = new ConcurrentHashMap<>();
 	
 	public PlayerDataHandler(Player player){
+		this.id = player.getEntityId();
 		this.dataFile = new File(DATA_SECTION_PATH.formatted(player.getUniqueId().toString()));
+		this.saveTask = new SaveTaskManager(this);
+	}
+	
+	@Override
+	public int getId(){
+		return id;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -99,18 +109,19 @@ public class PlayerDataHandler implements PlayerData{
 	public boolean setData(DataEnum type, Object object){
 		if(object != null && !type.match(object)) throw new RuntimeException("DataEnum '" + type.name() + "' not match value. must like " + type.getMatchClass().getSimpleName() + ".class type value.");
 		type.save(dataSection, object);
-		try{
-			this.dataSection.save(dataFile);
-			if(object != null){
-				this.datas.put(type, object);
-			}else{
-				this.datas.remove(type);
-			}
-			return true;
-		}catch (IOException e){
-			e.printStackTrace();
+		if(object != null){
+			this.datas.put(type, object);
+		}else{
+			this.datas.remove(type);
 		}
-		return false;
+		this.saveTask.submit(() -> {
+			try{
+				this.dataSection.save(dataFile);
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+		});
+		return true;
 	}
 
 	@Override
@@ -120,5 +131,15 @@ public class PlayerDataHandler implements PlayerData{
 			Object value = type.provide(dataSection);
 			if(value != null) this.datas.put(type, value);
 		}
+	}
+
+	@Override
+	public void saveShutdown(){
+		this.saveTask.saveShutdown();
+	}
+
+	@Override
+	public void saveGracefully(){
+		this.saveTask.saveGracefully();
 	}
 }
