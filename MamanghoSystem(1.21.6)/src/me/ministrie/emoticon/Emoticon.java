@@ -56,6 +56,10 @@ public class Emoticon{
 		return font;
 	}
 	
+	public String getFont(boolean big){
+		return big ? font+"_" : font;
+	}
+	
 	public String getValue(){
 		return value;
 	}

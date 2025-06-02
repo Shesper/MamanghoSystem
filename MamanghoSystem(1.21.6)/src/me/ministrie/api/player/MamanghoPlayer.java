@@ -8,6 +8,7 @@ import me.ministrie.emoticon.Emoticon;
 import me.ministrie.gui.proccess.ProcessScreen;
 import me.ministrie.handlers.player.MamanghoPlayerHandler;
 import me.ministrie.main.MamanghoSystem;
+import me.ministrie.managers.PlayerCooldownManager;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.model.user.User;
 
@@ -35,6 +36,8 @@ public interface MamanghoPlayer{
 	
 	public void printIcon(Emoticon emoticon);
 	
+	public void printIcon(Emoticon emoticon, boolean big);
+	
 	public void printPairIcon(Emoticon first, Emoticon second);
 	
 	public PlayerData getData();
@@ -44,6 +47,8 @@ public interface MamanghoPlayer{
 	public ProcessScreen getProcessScreen();
 	
 	public void setProcessScreen(ProcessScreen screen);
+	
+	public PlayerCooldownManager getCooldownManager();
 
 	public static MamanghoPlayer getOrEmpty(Player player){
 		MamanghoPlayer get = MamanghoSystem.getPlayerManager().getPlayer(player);

@@ -16,6 +16,7 @@ import org.bukkit.inventory.InventoryView;
 
 import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.configs.IconSetting;
+import me.ministrie.configs.ServerSetting;
 import me.ministrie.configs.SoundSetting;
 import me.ministrie.emoticon.Emoticon;
 import me.ministrie.emoticon.EmoticonBookmark;
@@ -25,6 +26,8 @@ import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
 import me.ministrie.gui.types.holders.emoticon.EmoticonBookmarkedGuiHolder;
 import me.ministrie.handlers.data.player.PlayerDataHandler.DataEnum;
+import me.ministrie.managers.PlayerCooldownManager;
+import me.ministrie.managers.PlayerCooldownManager.CooldownType;
 import me.ministrie.utils.MathUtil;
 import me.ministrie.utils.component.ComponentUtil;
 import me.ministrie.utils.string.StringUtils;
@@ -177,6 +180,20 @@ public class EmoticonBookmarkedGui extends EmoticonScreen implements Screen, Pag
 					this.hookPairFirst(null);
 					SoundSetting.DEFAULT_GUI_HOOK_EMOTICON_PAIR_FIRST.playSound(viewer);
 					this.viewer.getPlayer().updateInventory();
+				}
+			}else if(click.equals(ClickType.NUMBER_KEY)){
+				if(event.getHotbarButton() == 0){
+					PlayerCooldownManager cooldowns = this.viewer.getCooldownManager();
+					if(cooldowns.isCooldown(CooldownType.BIG_EMOTICON)){
+						this.viewer.getPlayer().sendMessage(ComponentUtil.translatiableFrom("system.cooldowns.big-emoticon", ComponentUtil.parseComponent(COOLDOWN_FORMAT.formatted(Long.toString(cooldowns.getRemainCooldownWithSeconds(CooldownType.BIG_EMOTICON))))));
+						return;
+					}
+					this.closeAbsolutly();
+					this.viewer.printIcon(emoticon, true);
+					this.viewer.getPlayer().updateInventory();
+					if(!this.viewer.getPlayer().isOp()){
+						cooldowns.setCooldown(CooldownType.BIG_EMOTICON, System.currentTimeMillis()+ServerSetting.BIG_EMOTICON_COOLDOWN.<Integer>getValue());
+					}
 				}
 			}
 		}else if(slot == PREVIOUS_BUTTON_SLOT){

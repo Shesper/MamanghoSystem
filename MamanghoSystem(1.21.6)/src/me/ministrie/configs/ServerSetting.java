@@ -13,6 +13,8 @@ public enum ServerSetting{
 	CHAT_MESSAGE_MAX_LENGTH("config.chat.message-max-length", 64),
 	NICKNAME_CHANGE_MAX_LENGTH("config.chat.nickname-max-length", 15),
 	
+	BIG_EMOTICON_COOLDOWN("config.player.cooldowns.big-emoticon-cooldown", 10000),
+	
 	RESOURCEPACK_URL("config.system.resourcepack-url", ""),
 	RESOURCEPACK_UUID("config.system.resourcepack-uuid", UUID.randomUUID().toString()),
 	RESOURCEPACK_SHA1_HASH("config.system.resourcepack-sha1-hash", "");

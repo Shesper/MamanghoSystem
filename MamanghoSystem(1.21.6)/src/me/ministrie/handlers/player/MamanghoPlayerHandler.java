@@ -21,6 +21,7 @@ import me.ministrie.gui.proccess.ProcessScreen;
 import me.ministrie.handlers.data.player.PlayerDataHandler;
 import me.ministrie.handlers.data.player.PlayerDataHandler.DataEnum;
 import me.ministrie.main.MamanghoSystem;
+import me.ministrie.managers.PlayerCooldownManager;
 import me.ministrie.packet.protocol.ProtocolTools;
 import me.ministrie.utils.Pair;
 import me.ministrie.utils.Trio;
@@ -44,6 +45,7 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	private User user;
 	private PlayerData data;
 	private ProcessScreen processing;
+	private PlayerCooldownManager cooldowns;
 	private boolean empty;
 	
 	public MamanghoPlayerHandler(Player handler, boolean emptyConstruct){
@@ -55,6 +57,7 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 		this.handler = handler;
 		this.user = LuckPermsProvider.get().getUserManager().getUser(handler.getUniqueId());
 		this.data = new PlayerDataHandler(handler);
+		this.cooldowns = new PlayerCooldownManager(this);
 	}
 	
 	@Override
@@ -131,6 +134,22 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 			users.forEach(user -> {
 				user.sendMessage(this.mixinChat(user, msg));
 				for(int i = 0; i < emoticon.getGab(); i++){
+					user.sendMessage(Component.space());
+				}
+			});
+			Bukkit.getLogger().log(Level.INFO, MessageSetting.CHAT_MESSAGE_CONSOLE_FORMAT.getValue(this.getNickname(), DISPALY_EMOJI_FORMAT.formatted(emoticon.getID())));
+		}).execute();
+	}
+	
+	@Override
+	public void printIcon(Emoticon emoticon, boolean big){
+		Component msg = MessageSetting.CHAT_EMOTICON_FORMAT.getComponent(this.getNickname(), this.getPrefix(), emoticon.getValue(), emoticon.getFont(big));
+		MamanghoSystem.getTaskChainFactory().newChain().syncFirst(() -> {
+			return Bukkit.getOnlinePlayers();
+		}).asyncLast((users) -> {
+			users.forEach(user -> {
+				user.sendMessage(this.mixinChat(user, msg));
+				for(int i = 0; i < (big ? emoticon.getGab()*2 : emoticon.getGab()); i++){
 					user.sendMessage(Component.space());
 				}
 			});
@@ -253,5 +272,10 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	@Override
 	public boolean isEmpty(){
 		return empty;
+	}
+
+	@Override
+	public PlayerCooldownManager getCooldownManager(){
+		return cooldowns;
 	}
 }

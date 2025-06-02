@@ -32,11 +32,11 @@ public enum IconSetting{
 	GUI_EMOTICON_BOOKMARK_BUTTON("gui.general.emoticon-bookmark-button", "FEATHER:5", "&f북마크한 디시콘 보기", ""),
 	
 	EMOTICON_ICON("emoticon.icon", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}"),
-	EMOTICON_DETAIL_ICON_UNBOOKMARK("emoticon.detail-icon-unbookmarked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &a즐겨찾기 추가|&fSHIFT+좌클릭: &6더블 콘 사용"),
-	EMOTICON_DETAIL_ICON_BOOKMARKED("emoticon.detail-icon-bookmark", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&fSHIFT+좌클릭: &6더블 콘 사용"),
+	EMOTICON_DETAIL_ICON_UNBOOKMARK("emoticon.detail-icon-unbookmarked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &a즐겨찾기 추가|&fSHIFT+좌클릭: &6더블 콘 사용|&f1번 키 입력: &d대왕 디시콘 사용"),
+	EMOTICON_DETAIL_ICON_BOOKMARKED("emoticon.detail-icon-bookmark", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&fSHIFT+좌클릭: &6더블 콘 사용|&f1번 키 입력: &d대왕 디시콘 사용"),
 	
-	EMOTICON_DETAIL_ICON_UNBOOKMARK_HOOKED("emoticon.detail-icon-unbookmarked-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &a즐겨찾기 추가|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f"),
-	EMOTICON_DETAIL_ICON_BOOKMARKED_HOOKED("emoticon.detail-icon-bookmark-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f"),
+	EMOTICON_DETAIL_ICON_UNBOOKMARK_HOOKED("emoticon.detail-icon-unbookmarked-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &a즐겨찾기 추가|&f1번 키 입력: &d대왕 디시콘 사용|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f"),
+	EMOTICON_DETAIL_ICON_BOOKMARKED_HOOKED("emoticon.detail-icon-bookmark-hooked", "FEATHER:-1", "{0}", "{1}|&f|&f|&f|&f|&f|&f|{2}|&f좌 클릭: &b이모티콘 사용|&f우 클릭: &c즐겨찾기 제거|&f1번 키 입력: &d대왕 디시콘 사용|&f|&f더블 콘 첫번 째 선택 중(&a다음 아이콘을 SHIFT+우클릭&f)|{3}|&f|&f|&f|&f|&f"),
 	
 	IMAGE_FRAME_CREATE_IMAGES("image-frame.create-image", "IRON_INGOT:1", "&f이미지 맵 생성", "&f클릭 시 이미지 맵 생성을 시작합니다.|&f플레이어 당 &b{0}&f개의 이미지를 생성할 수 있습니다."),
 	IMAGE_FRAME_MANAGEMENT_MY_IMAGES("image-frame.management-my-image", "IRON_INGOT:2", "&f내 이미지 맵 관리", "&f클릭 시 내가 만든 이미지 맵들을 관리합니다."),
