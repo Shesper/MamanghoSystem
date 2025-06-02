@@ -9,22 +9,29 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.configs.MessageSetting;
 import me.ministrie.configs.ServerSetting;
-import me.ministrie.datapack.recipe.ExclusiveRecipes;
+import me.ministrie.datapack.recipe.shapes.ExclusiveShapeRecipes;
+import me.ministrie.datapack.recipe.smithings.ExclusiveSmithingRecipes;
 import me.ministrie.functions.Callback;
 import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
@@ -165,10 +172,36 @@ public class PlayerListenerHandler implements Listener{
 	}
 	
 	@EventHandler
+	public void prepareCrafing(PrepareItemCraftEvent event){
+		CraftingInventory crafting = event.getInventory();
+		Recipe recipe = crafting.getRecipe();
+		if(recipe != null && recipe instanceof ShapedRecipe shape){
+			ExclusiveShapeRecipes exclusive = ExclusiveShapeRecipes.fromExclusive(shape);
+			if(exclusive != null){
+				if(!exclusive.checkCondition(crafting)){
+					crafting.setResult(null);
+					return;
+				}
+				crafting.setResult(exclusive.export(crafting.getResult()));
+				return;
+			}
+			for(ItemStack material : crafting.getMatrix()){
+				if(material == null || material.isEmpty()) continue;
+				ItemMeta meta = material.getItemMeta();
+				CustomModelDataComponent cmd = meta.getCustomModelDataComponent();
+				if(!cmd.getFloats().isEmpty()){
+					crafting.setResult(null); /* 허용되지 않은 커스텀 모델이 존재하는 아이템은 조합할 수 없음. */
+					break;
+				}
+			}
+		}
+	}
+	
+	@EventHandler
 	public void prepareSmithing(PrepareSmithingEvent event){
 		Recipe recipe = event.getInventory().getRecipe();
 		if(recipe != null && recipe instanceof SmithingRecipe smithingRecipe){
-			ExclusiveRecipes exclusive = ExclusiveRecipes.fromExclusive(smithingRecipe);
+			ExclusiveSmithingRecipes exclusive = ExclusiveSmithingRecipes.fromExclusive(smithingRecipe);
 			if(exclusive != null){
 				if(!exclusive.checkCondition(event.getInventory())){
 					event.setResult(null);

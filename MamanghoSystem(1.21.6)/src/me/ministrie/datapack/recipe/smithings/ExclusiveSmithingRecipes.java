@@ -1,4 +1,4 @@
-package me.ministrie.datapack.recipe;
+package me.ministrie.datapack.recipe.smithings;
 
 import java.util.function.Function;
 
@@ -11,22 +11,20 @@ import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
-public enum ExclusiveRecipes{
+public enum ExclusiveSmithingRecipes{
 
 	NETHERITE_ELYTRA_CHESTPLATE("elytrachestplate:netherite", (inventory) -> {
 		ItemStack template = inventory.getInputTemplate();
 		ItemMeta meta = template.getItemMeta();
 		CustomModelDataComponent cmd = meta.getCustomModelDataComponent();
 		return cmd.getFloats().contains(1.0f);
-	}, (item) -> {
-		return item;
-	});
+	}, (item) -> item);
 	
-	private static final Map<String, ExclusiveRecipes> caches;
+	private static final Map<String, ExclusiveSmithingRecipes> caches;
 	
 	static{
 		caches = new HashMap<>();
-		for(ExclusiveRecipes e : ExclusiveRecipes.values()){
+		for(ExclusiveSmithingRecipes e : ExclusiveSmithingRecipes.values()){
 			caches.put(e.getKey(), e);
 		}
 	}
@@ -35,7 +33,7 @@ public enum ExclusiveRecipes{
 	private Function<SmithingInventory, Boolean> condition;
 	private Function<ItemStack, ItemStack> export;
 	
-	ExclusiveRecipes(String key, Function<SmithingInventory, Boolean> condition, Function<ItemStack, ItemStack> export){
+	ExclusiveSmithingRecipes(String key, Function<SmithingInventory, Boolean> condition, Function<ItemStack, ItemStack> export){
 		this.key = key;
 		this.condition = condition;
 		this.export = export;
@@ -53,7 +51,7 @@ public enum ExclusiveRecipes{
 		return this.export.apply(result);
 	}
 	
-	public static ExclusiveRecipes fromExclusive(SmithingRecipe recipe){
+	public static ExclusiveSmithingRecipes fromExclusive(SmithingRecipe recipe){
 		return caches.get(recipe.getKey().toString());
 	}
 }
