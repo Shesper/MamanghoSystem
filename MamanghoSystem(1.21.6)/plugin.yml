@@ -25,3 +25,6 @@ commands:
   tell:
     description: player to player messsage command
     aliases: [w, msg]
+  con:
+    description: emoticon gui command
+    aliases: [c]

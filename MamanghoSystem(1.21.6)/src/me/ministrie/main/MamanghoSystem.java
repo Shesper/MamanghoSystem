@@ -10,6 +10,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChainFactory;
 import me.ministrie.commands.AdminCommand;
+import me.ministrie.commands.EmoticonCommand;
 import me.ministrie.commands.HelpCommand;
 import me.ministrie.commands.ImageMapCommand;
 import me.ministrie.commands.NicknameChangeCommand;
@@ -100,6 +101,7 @@ public class MamanghoSystem extends JavaPlugin{
 	
 	private void bukkitCommandLoad(){
 		this.getCommand("system").setExecutor(new AdminCommand());
+		this.getCommand("con").setExecutor(new EmoticonCommand());
 		this.getCommand("namechange").setExecutor(new NicknameChangeCommand());
 		this.getCommand("sharelocation").setExecutor(new ShareLocationCommand());
 		this.getCommand("help").setExecutor(new HelpCommand());
