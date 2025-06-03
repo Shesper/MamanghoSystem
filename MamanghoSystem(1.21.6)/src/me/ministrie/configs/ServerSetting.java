@@ -12,6 +12,7 @@ public enum ServerSetting{
 	
 	CHAT_MESSAGE_MAX_LENGTH("config.chat.message-max-length", 64),
 	NICKNAME_CHANGE_MAX_LENGTH("config.chat.nickname-max-length", 15),
+	DAMAGE_TICK("config.combat.damage-tick-delay", 450),
 	
 	BIG_EMOTICON_COOLDOWN("config.player.cooldowns.big-emoticon-cooldown", 10000),
 	

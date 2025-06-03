@@ -38,6 +38,7 @@ public class PlayerManager{
 	}
 	
 	public MamanghoPlayer removePlayer(Player player){
+		MamanghoSystem.getDamageTickController().unregister(player);
 		MamanghoPlayer user = this.caches.remove(player.getUniqueId());
 		if(user != null){
 			user.getData().saveGracefully();
@@ -46,6 +47,7 @@ public class PlayerManager{
 	}
 	
 	public void removePlayerShutdown(Player player){
+		MamanghoSystem.getDamageTickController().unregister(player);
 		MamanghoPlayer user = this.caches.remove(player.getUniqueId());
 		if(user != null){
 			user.getData().saveShutdown();

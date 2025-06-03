@@ -1,10 +1,15 @@
 package me.ministrie.handlers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -39,6 +44,7 @@ import me.ministrie.gui.TaskHolder;
 import me.ministrie.gui.proccess.ProcessScreen;
 import me.ministrie.gui.types.emoticon.EmoticonGui;
 import me.ministrie.main.MamanghoSystem;
+import me.ministrie.managers.DamageTickController;
 import me.ministrie.packet.protocol.ProtocolTools;
 import me.ministrie.thread.ThreadUtils;
 import me.ministrie.utils.component.ComponentUtil;
@@ -215,5 +221,43 @@ public class PlayerListenerHandler implements Listener{
 	@EventHandler
 	public void onAdvancementDone(PlayerAdvancementDoneEvent event){
 		event.message(ComponentUtil.extractTranslatable(event.message()));
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onDamageEvent(EntityDamageByEntityEvent event){
+		if(event.isCancelled()) return;
+		Player attacker = null;
+		Entity damager = event.getDamager();
+		Entity entity = event.getEntity();
+		if(entity instanceof LivingEntity living){
+			boolean projectile = false;
+			if(damager instanceof Projectile){
+				projectile = true;
+				Projectile proj = (Projectile) damager;
+				if(proj.getShooter() instanceof Player player){
+					attacker = player;
+				}else{
+					damager = proj.getShooter() != null ? (Entity) proj.getShooter() : damager;
+				}
+			}else if(damager instanceof Player player){
+				attacker = player;
+			}
+			ThreadUtils.runThreadSafe((v) -> living.setNoDamageTicks(0), 1);
+			DamageTickController controller = MamanghoSystem.getDamageTickController();
+			if(attacker == null && entity instanceof Player player && damager instanceof Mob){
+				if(controller.isVictimPlayerTick(player)){
+					event.setCancelled(true);
+					return;
+				}
+				controller.damageTickForMonster(player, ServerSetting.DAMAGE_TICK.<Integer>getValue());
+			}
+			if(attacker != null && !projectile){
+				if(controller.isDamageTicking(attacker, living)){
+					event.setCancelled(true);
+					return;
+				}
+				controller.damageTicking(attacker, living, ServerSetting.DAMAGE_TICK.<Integer>getValue());
+			}
+		}
 	}
 }

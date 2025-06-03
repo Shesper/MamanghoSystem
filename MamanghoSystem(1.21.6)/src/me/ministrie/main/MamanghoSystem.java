@@ -23,6 +23,7 @@ import me.ministrie.configs.SoundSetting;
 import me.ministrie.emoticon.EmoticonBookmark;
 import me.ministrie.handlers.LuckpermsListenerHandler;
 import me.ministrie.handlers.PlayerListenerHandler;
+import me.ministrie.managers.DamageTickController;
 import me.ministrie.managers.EmoticonManager;
 import me.ministrie.managers.PlayerManager;
 import me.ministrie.packet.protocol.listener.ServerLogin;
@@ -37,20 +38,14 @@ public class MamanghoSystem extends JavaPlugin{
 	private static EmoticonManager emojiManager;
 	private static BiomeInformation biomeSummary;
 	private static TaskChainFactory TASK_CHAIN;
+	private static DamageTickController tickController;
 	private static UserTabListUpdater tabUpdater;
 	
 	@Override
 	public void onEnable(){
 		instance = this;
+		this.bukkitCommandLoad();
 		TASK_CHAIN = BukkitTaskChainFactory.create(this);
-		this.getCommand("system").setExecutor(new AdminCommand());
-		this.getCommand("namechange").setExecutor(new NicknameChangeCommand());
-		this.getCommand("sharelocation").setExecutor(new ShareLocationCommand());
-		this.getCommand("help").setExecutor(new HelpCommand());
-		this.getCommand("image").setExecutor(new ImageMapCommand());
-		WhisperCommand whipsercmd = new WhisperCommand();
-		this.getCommand("tell").setExecutor(whipsercmd);
-		this.getCommand("tell").setTabCompleter(whipsercmd);
 		ConfigurationSerialization.registerClass(EmoticonBookmark.class);
 		Bukkit.getPluginManager().registerEvents(new PlayerListenerHandler(), this);
 		ServerSetting.load();
@@ -61,6 +56,7 @@ public class MamanghoSystem extends JavaPlugin{
 		tabUpdater = new UserTabListUpdater();
 		emojiManager = new EmoticonManager();
 		biomeSummary = new BiomeInformation();
+		tickController = new DamageTickController();
 		LuckpermsListenerHandler.start();
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerLogin(this));
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerRespawn(this));
@@ -94,7 +90,22 @@ public class MamanghoSystem extends JavaPlugin{
 		return biomeSummary;
 	}
 	
+	public static DamageTickController getDamageTickController(){
+		return tickController;
+	}
+	
 	public static TaskChainFactory getTaskChainFactory(){
 		return TASK_CHAIN;
+	}
+	
+	private void bukkitCommandLoad(){
+		this.getCommand("system").setExecutor(new AdminCommand());
+		this.getCommand("namechange").setExecutor(new NicknameChangeCommand());
+		this.getCommand("sharelocation").setExecutor(new ShareLocationCommand());
+		this.getCommand("help").setExecutor(new HelpCommand());
+		this.getCommand("image").setExecutor(new ImageMapCommand());
+		WhisperCommand whipsercmd = new WhisperCommand();
+		this.getCommand("tell").setExecutor(whipsercmd);
+		this.getCommand("tell").setTabCompleter(whipsercmd);
 	}
 }

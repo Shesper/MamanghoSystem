@@ -2,6 +2,8 @@ package me.ministrie.packet.protocol.listener;
 
 import java.security.SecureRandom;
 
+import org.bukkit.plugin.Plugin;
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -9,7 +11,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 
-import me.ministrie.main.MamanghoSystem;
 import me.ministrie.utils.MathUtil;
 
 /**
@@ -23,7 +24,7 @@ public class ServerRespawn extends PacketAdapter{
 	
 	private static final SecureRandom RANDOM = new SecureRandom();
 	
-	public ServerRespawn(MamanghoSystem plugin){
+	public ServerRespawn(Plugin plugin){
 		super(plugin, PacketType.Play.Server.RESPAWN);
 	}
 	

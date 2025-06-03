@@ -6,7 +6,6 @@ version: 1.0.0
 depend: [ProtocolLib, LuckPerms, ImageFrame]
 softdepend: []
 api-version: 1.21
-load: STARTUP
 
 commands:
   system:
