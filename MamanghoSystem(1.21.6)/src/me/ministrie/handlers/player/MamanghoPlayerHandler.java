@@ -1,5 +1,7 @@
 package me.ministrie.handlers.player;
 
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -8,7 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.ministrie.api.data.player.PlayerData;
 import me.ministrie.api.player.MamanghoPlayer;
@@ -16,6 +23,8 @@ import me.ministrie.configs.BiomeInformation.BiomeSummary;
 import me.ministrie.configs.MessageSetting;
 import me.ministrie.configs.ServerSetting;
 import me.ministrie.emoticon.Emoticon;
+import me.ministrie.enchantments.CustomEnchantment;
+import me.ministrie.enchantments.EnchantmentFinder;
 import me.ministrie.functions.Callback;
 import me.ministrie.gui.proccess.ProcessScreen;
 import me.ministrie.handlers.data.player.PlayerDataHandler;
@@ -47,6 +56,7 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	private ProcessScreen processing;
 	private PlayerCooldownManager cooldowns;
 	private boolean empty;
+	private BukkitTask equipmentTask;
 	
 	public MamanghoPlayerHandler(Player handler, boolean emptyConstruct){
 		this.handler = handler;
@@ -277,5 +287,169 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	@Override
 	public PlayerCooldownManager getCooldownManager(){
 		return cooldowns;
+	}
+
+	@Override
+	public void brokenEquipment(ItemStack broken){
+		EnchantmentFinder.findEnchantments(broken).forEach((k, v) -> {
+			k.onUnequip(handler, broken.getType().getEquipmentSlot(), v);
+		});
+	}
+
+	@Override
+	public void initializeEquipment(){
+		if(handler.isOnline()){
+			PlayerInventory inv = handler.getInventory();
+			EnchantmentFinder.getEnchantments().forEach((k, v) -> {
+				v.onUnequip(handler);
+			});
+			if(equipmentTask != null) equipmentTask.cancel();
+			equipmentTask = Bukkit.getScheduler().runTaskLater(MamanghoSystem.getInstance(), () -> {
+				if(!handler.isOnline() || !handler.isValid() || handler.isDead()) return;
+				ItemStack[] armors = inv.getArmorContents();
+				for(ItemStack armor : armors){
+					if(armor == null || armor.isEmpty()) continue;
+					EnchantmentFinder.findEnchantments(armor).forEach((k, v) -> {
+						k.onEquip(handler, armor.getType().getEquipmentSlot(), v);
+					});
+				}
+				ItemStack hand = inv.getItemInMainHand();
+				ItemStack offhand = inv.getItemInOffHand();
+				if(hand != null && !hand.isEmpty() && hand.getType().getEquipmentSlot().equals(EquipmentSlot.HAND)){
+					EnchantmentFinder.findEnchantments(hand).forEach((k, v) -> {
+						k.onEquip(handler, hand.getType().getEquipmentSlot(), v);
+					});
+				}
+				if(offhand != null && !offhand.isEmpty() && offhand.getType().getEquipmentSlot().equals(EquipmentSlot.OFF_HAND)){
+					EnchantmentFinder.findEnchantments(offhand).forEach((k, v) -> {
+						k.onEquip(handler, offhand.getType().getEquipmentSlot(), v);
+					});
+				}
+				equipmentTask = null;
+			}, 2);
+		}
+	}
+	
+	@Override
+	public void initializeEquipment(List<EquipmentSlot> modifiedSlots){
+		if(handler.isOnline()){
+			PlayerInventory inv = handler.getInventory();
+			EnchantmentFinder.fromCategories(modifiedSlots).forEach(e -> {
+				e.onUnequip(handler);
+			});
+			if(equipmentTask != null) equipmentTask.cancel();
+			equipmentTask = Bukkit.getScheduler().runTaskLater(MamanghoSystem.getInstance(), () -> {
+				if(!handler.isOnline() || !handler.isValid() || handler.isDead()) return;
+				ItemStack[] armors = inv.getArmorContents();
+				for(ItemStack armor : armors){
+					if(armor == null || armor.isEmpty()) continue;
+					EnchantmentFinder.findEnchantments(armor).forEach((k, v) -> {
+						k.onEquip(handler, armor.getType().getEquipmentSlot(), v);
+					});
+				}
+				ItemStack hand = inv.getItemInMainHand();
+				ItemStack offhand = inv.getItemInOffHand();
+				if(hand != null && !hand.isEmpty() && hand.getType().getEquipmentSlot().equals(EquipmentSlot.HAND)){
+					EnchantmentFinder.findEnchantments(hand).forEach((k, v) -> {
+						k.onEquip(handler, hand.getType().getEquipmentSlot(), v);
+					});
+				}
+				if(offhand != null && !offhand.isEmpty() && offhand.getType().getEquipmentSlot().equals(EquipmentSlot.OFF_HAND)){
+					EnchantmentFinder.findEnchantments(offhand).forEach((k, v) -> {
+						k.onEquip(handler, offhand.getType().getEquipmentSlot(), v);
+					});
+				}
+				equipmentTask = null;
+			}, 2);
+		}
+	}
+
+	@Override
+	public void onTrigger(Object value){
+		PlayerInventory inv = handler.getInventory();
+		if(!handler.isOnline() || !handler.isValid() || handler.isDead()) return;
+		ItemStack[] armors = inv.getArmorContents();
+		for(ItemStack armor : armors){
+			if(armor == null || armor.isEmpty()) continue;
+			EnchantmentFinder.findEnchantments(armor).forEach((k, v) -> {
+				k.onTrigger(handler, armor.getType().getEquipmentSlot(), value, v);
+			});
+		}
+		ItemStack hand = inv.getItemInMainHand();
+		ItemStack offhand = inv.getItemInOffHand();
+		if(hand != null && !hand.isEmpty() && hand.getType().getEquipmentSlot().equals(EquipmentSlot.HAND)){
+			EnchantmentFinder.findEnchantments(hand).forEach((k, v) -> {
+				k.onTrigger(handler, hand.getType().getEquipmentSlot(), value, v);
+			});
+		}
+		if(offhand != null && !offhand.isEmpty() && offhand.getType().getEquipmentSlot().equals(EquipmentSlot.OFF_HAND)){
+			EnchantmentFinder.findEnchantments(offhand).forEach((k, v) -> {
+				k.onTrigger(handler, offhand.getType().getEquipmentSlot(), value, v);
+			});
+		}
+	}
+
+	@Override
+	public double getIncreaseDamage(LivingEntity victim, double damage){
+		if(!handler.isOnline() || !handler.isValid() || handler.isDead()) return damage;
+		PlayerInventory inv = handler.getInventory();
+		ItemStack[] armors = inv.getArmorContents();
+		for(ItemStack armor : armors){
+			if(armor == null || armor.isEmpty()) continue;
+			for(Entry<CustomEnchantment, Integer> e : EnchantmentFinder.findEnchantments(armor).entrySet()){
+				CustomEnchantment k = e.getKey();
+				int v = e.getValue();
+				damage = k.getIncreaseDamage(handler, victim, damage, v);
+			}
+		}
+		ItemStack hand = inv.getItemInMainHand();
+		ItemStack offhand = inv.getItemInOffHand();
+		if(hand != null && !hand.isEmpty() && hand.getType().getEquipmentSlot().equals(EquipmentSlot.HAND)){
+			for(Entry<CustomEnchantment, Integer> e : EnchantmentFinder.findEnchantments(hand).entrySet()){
+				CustomEnchantment k = e.getKey();
+				int v = e.getValue();
+				damage = k.getIncreaseDamage(handler, victim, damage, v);
+			}
+		}
+		if(offhand != null && !offhand.isEmpty() && offhand.getType().getEquipmentSlot().equals(EquipmentSlot.OFF_HAND)){
+			for(Entry<CustomEnchantment, Integer> e : EnchantmentFinder.findEnchantments(offhand).entrySet()){
+				CustomEnchantment k = e.getKey();
+				int v = e.getValue();
+				damage = k.getIncreaseDamage(handler, victim, damage, v);
+			}
+		}
+		return damage;
+	}
+
+	@Override
+	public double getReduceDamage(double damage){
+		if(!handler.isOnline() || !handler.isValid() || handler.isDead()) return damage;
+		PlayerInventory inv = handler.getInventory();
+		ItemStack[] armors = inv.getArmorContents();
+		for(ItemStack armor : armors){
+			if(armor == null || armor.isEmpty()) continue;
+			for(Entry<CustomEnchantment, Integer> e : EnchantmentFinder.findEnchantments(armor).entrySet()){
+				CustomEnchantment k = e.getKey();
+				int v = e.getValue();
+				damage = k.getReduceDamage(handler, damage, v);
+			}
+		}
+		ItemStack hand = inv.getItemInMainHand();
+		ItemStack offhand = inv.getItemInOffHand();
+		if(hand != null && !hand.isEmpty() && hand.getType().getEquipmentSlot().equals(EquipmentSlot.HAND)){
+			for(Entry<CustomEnchantment, Integer> e : EnchantmentFinder.findEnchantments(hand).entrySet()){
+				CustomEnchantment k = e.getKey();
+				int v = e.getValue();
+				damage = k.getReduceDamage(handler, damage, v);
+			}
+		}
+		if(offhand != null && !offhand.isEmpty() && offhand.getType().getEquipmentSlot().equals(EquipmentSlot.OFF_HAND)){
+			for(Entry<CustomEnchantment, Integer> e : EnchantmentFinder.findEnchantments(offhand).entrySet()){
+				CustomEnchantment k = e.getKey();
+				int v = e.getValue();
+				damage = k.getReduceDamage(handler, damage, v);
+			}
+		}
+		return damage;
 	}
 }

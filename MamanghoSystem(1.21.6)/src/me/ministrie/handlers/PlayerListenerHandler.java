@@ -1,7 +1,12 @@
 package me.ministrie.handlers;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -9,7 +14,12 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -17,10 +27,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -28,9 +41,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
+import io.papermc.paper.event.entity.EntityEquipmentChangedEvent.EquipmentChange;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.configs.MessageSetting;
@@ -56,6 +75,7 @@ public class PlayerListenerHandler implements Listener{
 	public void onJoin(PlayerJoinEvent event){
 		event.joinMessage(null);
 		Player p = event.getPlayer();
+		MamanghoPlayer.getEmpty(p).initializeEquipment();
 		MamanghoSystem.getPlayerManager().loadAndCache(p, new Callback<MamanghoPlayer>(){
 			@Override
 			public void done(MamanghoPlayer player, Throwable error){
@@ -222,9 +242,33 @@ public class PlayerListenerHandler implements Listener{
 	public void onAdvancementDone(PlayerAdvancementDoneEvent event){
 		event.message(ComponentUtil.extractTranslatable(event.message()));
 	}
+
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onDamageEvent(EntityDamageEvent event){
+		if(event.isCancelled()) return;
+		Entity entity = event.getEntity();
+		if(event instanceof EntityDamageByEntityEvent entityEvent){
+			Entity damager = entityEvent.getDamager();
+			if(damager instanceof Player user){
+				MamanghoPlayer attacker = MamanghoPlayer.getPlayer(user);
+				if(attacker != null){
+					if(entity instanceof LivingEntity living){
+						event.setDamage(attacker.getIncreaseDamage(living, event.getDamage()));
+					}
+				}
+			}
+		}
+		if(entity instanceof Player user){
+			MamanghoPlayer victim = MamanghoPlayer.getPlayer(user);
+			if(victim != null){
+				event.setDamage(victim.getReduceDamage(event.getDamage()));
+				victim.onTrigger(event);
+			}
+		}
+	}
 	
 	@EventHandler(priority=EventPriority.MONITOR)
-	public void onDamageEvent(EntityDamageByEntityEvent event){
+	public void onDamageEntityEvent(EntityDamageByEntityEvent event){
 		if(event.isCancelled()) return;
 		Player attacker = null;
 		Entity damager = event.getDamager();
@@ -258,6 +302,93 @@ public class PlayerListenerHandler implements Listener{
 				}
 				controller.damageTicking(attacker, living, ServerSetting.DAMAGE_TICK.<Integer>getValue());
 			}
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onPlayerBreakItem(PlayerItemBreakEvent event){
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
+		if(player != null){
+			player.brokenEquipment(event.getBrokenItem());
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onChangeEquipment(EntityEquipmentChangedEvent event){
+		if(event.getEntityType().equals(EntityType.PLAYER)){
+			Player changer = (Player) event.getEntity();
+			MamanghoPlayer player = MamanghoPlayer.getOrEmpty(changer);
+			Map<EquipmentSlot, Boolean> checks = Maps.newHashMap();
+			List<EquipmentSlot> modifiedSlots = Lists.newArrayList();
+			for(Entry<EquipmentSlot, EquipmentChange> e : event.getEquipmentChanges().entrySet()){
+				EquipmentSlot k = e.getKey();
+				EquipmentChange v = e.getValue();
+				ItemStack before = v.oldItem();
+				ItemStack after = v.newItem();
+				if(before != null && after != null){
+					boolean same = before.getType().equals(after.getType()) && before.getEnchantments().hashCode() == after.getEnchantments().hashCode();
+					if(same){
+						ItemMeta bmeta = before.getItemMeta();
+						ItemMeta ameta = after.getItemMeta();
+						if(bmeta instanceof Damageable bd && ameta instanceof Damageable ad){
+							if(bd.getDamage() != ad.getDamage()){
+								return;
+							}
+						}
+					}
+				}
+				modifiedSlots.add(k);
+				checks.put(k, true);
+			}
+			if(checks.containsValue(true)){
+				player.initializeEquipment(modifiedSlots);
+			}
+			checks.clear();
+			checks = null;
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onFoodChange(FoodLevelChangeEvent event){
+		if(event.isCancelled()) return;
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getEntity());
+		if(player != null){
+			player.onTrigger(event);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onRegainHealth(EntityRegainHealthEvent event){
+		if(event.isCancelled()) return;
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getEntity().getUniqueId());
+		if(player != null){
+			player.onTrigger(event);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onBlockBreak(BlockBreakEvent event){
+		if(event.isCancelled()) return;
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
+		if(player != null){
+			player.onTrigger(event);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onExpChange(PlayerExpChangeEvent event){
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
+		if(player != null){
+			player.onTrigger(event);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onShootBow(EntityShootBowEvent event){
+		if(event.isCancelled()) return;
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getEntity().getUniqueId());
+		if(player != null){
+			player.onTrigger(event);
 		}
 	}
 }
