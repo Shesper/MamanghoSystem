@@ -7,6 +7,11 @@ depend: [ProtocolLib, LuckPerms, ImageFrame]
 softdepend: []
 api-version: 1.21
 
+permissions:
+  mamangho.skin.general:
+    description: use skin system permission
+    default: false
+
 commands:
   system:
     description: system command
@@ -28,3 +33,9 @@ commands:
   con:
     description: emoticon gui command
     aliases: [c]
+  skin:
+    description: skin gui command
+    aliases: [스킨]
+  hidelayer:
+    description: armor layer hide command
+    aliases: [h, hl]

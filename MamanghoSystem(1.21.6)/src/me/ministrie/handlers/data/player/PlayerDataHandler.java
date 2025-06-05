@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 import me.ministrie.api.data.player.PlayerData;
 import me.ministrie.emoticon.EmoticonBookmark;
 import me.ministrie.handlers.data.SaveTaskManager;
+import me.ministrie.main.MamanghoSystem;
+import me.ministrie.skins.BowSkin;
+import me.ministrie.skins.WeaponSkin;
 
 public class PlayerDataHandler implements PlayerData{
 
@@ -34,6 +37,75 @@ public class PlayerDataHandler implements PlayerData{
 			return data.getBoolean("data.share-location", false);
 		}, (config, value) -> {
 			config.set("data.share-location", value);
+		}),
+		
+		HIDE_ARMOR_LAYER(Boolean.class, "data.hide-armor-layer", (data) -> {
+			return data.getBoolean("data.hide-armor-layer", false);
+		}, (config, value) -> {
+			config.set("data.hide-armor-layer", value);
+		}),
+		
+		SWORD_SKIN(WeaponSkin.class, "data.skins.sword-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.sword-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.sword-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		AXE_SKIN(WeaponSkin.class, "data.skins.axe-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.axe-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.axe-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		MACE_SKIN(WeaponSkin.class, "data.skins.mace-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.mace-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.mace-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		PICKAXE_SKIN(WeaponSkin.class, "data.skins.pickaxe-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.pickaxe-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.pickaxe-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		SHOVEL_SKIN(WeaponSkin.class, "data.skins.shovel-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.shovel-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.shovel-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		HOE_SKIN(WeaponSkin.class, "data.skins.hoe-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.hoe-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.hoe-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		FISHING_ROD_SKIN(WeaponSkin.class, "data.skins.fishing-rod-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.fishing-rod-skin"));
+		}, (config, value) -> {
+			WeaponSkin skin = (WeaponSkin) value;
+			config.set("data.skins.fishing-rod-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		BOW_SKIN(BowSkin.class, "data.skins.bow-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.bow-skin"));
+		}, (config, value) -> {
+			BowSkin skin = (BowSkin) value;
+			config.set("data.skins.bow-skin", skin != null ? skin.getUID() : null);
+		}),
+
+		CROSSBOW_SKIN(BowSkin.class, "data.skins.weapon-skin", (data) -> {
+			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.crossbow-skin"));
+		}, (config, value) -> {
+			BowSkin skin = (BowSkin) value;
+			config.set("data.skins.crossbow-skin", skin != null ? skin.getUID() : null);
 		});
 		
 		private Function<YamlConfiguration, Object> dataProvide;
@@ -58,7 +130,7 @@ public class PlayerDataHandler implements PlayerData{
 		}
 		
 		public boolean match(Object o){
-			return o.getClass().isAssignableFrom(matcher);
+			return matcher.isAssignableFrom(o.getClass());
 		}
 		
 		public Object provide(YamlConfiguration config){
@@ -76,6 +148,7 @@ public class PlayerDataHandler implements PlayerData{
 	private YamlConfiguration dataSection;
 	private int id;
 	private SaveTaskManager saveTask;
+	private SkinModule skinModule;
 	
 	private ConcurrentMap<DataEnum, Object> datas = new ConcurrentHashMap<>();
 	
@@ -83,6 +156,7 @@ public class PlayerDataHandler implements PlayerData{
 		this.id = player.getEntityId();
 		this.dataFile = new File(DATA_SECTION_PATH.formatted(player.getUniqueId().toString()));
 		this.saveTask = new SaveTaskManager(this);
+		this.skinModule = new SkinModule(this);
 	}
 	
 	@Override
@@ -141,5 +215,10 @@ public class PlayerDataHandler implements PlayerData{
 	@Override
 	public void saveGracefully(){
 		this.saveTask.saveGracefully();
+	}
+
+	@Override
+	public SkinModule getSkinModule(){
+		return skinModule;
 	}
 }

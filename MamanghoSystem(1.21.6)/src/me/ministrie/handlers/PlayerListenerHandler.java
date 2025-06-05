@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -29,6 +31,7 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -68,12 +71,22 @@ import me.ministrie.gui.types.emoticon.EmoticonGui;
 import me.ministrie.main.MamanghoSystem;
 import me.ministrie.managers.DamageTickController;
 import me.ministrie.packet.protocol.ProtocolTools;
+import me.ministrie.skins.BowSkin;
+import me.ministrie.skins.WeaponSkin;
 import me.ministrie.thread.ThreadUtils;
 import me.ministrie.utils.component.ComponentUtil;
 import net.kyori.adventure.text.format.TextColor;
 
 public class PlayerListenerHandler implements Listener{
 
+	@EventHandler
+	public void onChangeGamemode(PlayerGameModeChangeEvent event){
+		Player player = event.getPlayer();
+		if(event.getNewGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.CREATIVE)){
+			ThreadUtils.runThreadSafe((v) -> player.updateInventory(), 1);
+		}
+	}
+	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event){
 		event.joinMessage(null);
@@ -101,6 +114,7 @@ public class PlayerListenerHandler implements Listener{
 				}
 				ThreadUtils.runThreadSafe((v) -> {
 					player.updateNameVisually();
+					player.getPlayer().updateInventory();
 					ProtocolTools.updateOtherFakeAboveName(player);
 				});
 			}
@@ -282,6 +296,12 @@ public class PlayerListenerHandler implements Listener{
 				if(attacker != null){
 					if(entity instanceof LivingEntity living){
 						event.setDamage(attacker.getIncreaseDamage(living, event.getDamage()));
+						if(event.getCause().equals(DamageCause.ENTITY_ATTACK)){
+							WeaponSkin skin = attacker.getData().getSkinModule().getMeleeWeaponSkin(user.getInventory().getItemInMainHand());
+							if(skin != null){
+								skin.getHitSound().playSound(living.getLocation());
+							}
+						}
 					}
 				}
 			}
@@ -417,6 +437,10 @@ public class PlayerListenerHandler implements Listener{
 		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getEntity().getUniqueId());
 		if(player != null){
 			player.onTrigger(event);
+			BowSkin skin = player.getData().getSkinModule().getBowSkin(event.getBow());
+			if(skin != null){
+				skin.getShootSound().playSound(event.getEntity().getLocation());
+			}
 		}
 	}
 }

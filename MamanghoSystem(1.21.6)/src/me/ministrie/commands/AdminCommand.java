@@ -24,6 +24,7 @@ public class AdminCommand implements CommandExecutor{
 					SoundSetting.load();
 					MamanghoSystem.getEmoticonManager().load();
 					MamanghoSystem.getBiomeInformation().load();
+					MamanghoSystem.getSkinManager().load();
 					sender.sendMessage(ComponentUtil.parseComponent("MamanghoSystem 플러그인의 설정 정보가 로드되었습니다."));
 					return true;
 				}

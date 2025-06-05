@@ -12,9 +12,11 @@ import co.aikar.taskchain.TaskChainFactory;
 import me.ministrie.commands.AdminCommand;
 import me.ministrie.commands.EmoticonCommand;
 import me.ministrie.commands.HelpCommand;
+import me.ministrie.commands.HideLayerCommand;
 import me.ministrie.commands.ImageMapCommand;
 import me.ministrie.commands.NicknameChangeCommand;
 import me.ministrie.commands.ShareLocationCommand;
+import me.ministrie.commands.SkinCommand;
 import me.ministrie.commands.WhisperCommand;
 import me.ministrie.configs.BiomeInformation;
 import me.ministrie.configs.IconSetting;
@@ -27,8 +29,10 @@ import me.ministrie.handlers.PlayerListenerHandler;
 import me.ministrie.managers.DamageTickController;
 import me.ministrie.managers.EmoticonManager;
 import me.ministrie.managers.PlayerManager;
+import me.ministrie.managers.SkinManager;
 import me.ministrie.packet.protocol.listener.ServerLogin;
 import me.ministrie.packet.protocol.listener.ServerRespawn;
+import me.ministrie.packet.protocol.listener.SkinListener;
 import me.ministrie.schedulers.UserTabListUpdater;
 
 public class MamanghoSystem extends JavaPlugin{
@@ -41,6 +45,7 @@ public class MamanghoSystem extends JavaPlugin{
 	private static TaskChainFactory TASK_CHAIN;
 	private static DamageTickController tickController;
 	private static UserTabListUpdater tabUpdater;
+	private static SkinManager skinManager;
 	
 	@Override
 	public void onEnable(){
@@ -58,9 +63,11 @@ public class MamanghoSystem extends JavaPlugin{
 		emojiManager = new EmoticonManager();
 		biomeSummary = new BiomeInformation();
 		tickController = new DamageTickController();
+		skinManager = new SkinManager();
 		LuckpermsListenerHandler.start();
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerLogin(this));
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerRespawn(this));
+		ProtocolLibrary.getProtocolManager().addPacketListener(new SkinListener(this));
 	}
 	
 	@Override
@@ -95,6 +102,10 @@ public class MamanghoSystem extends JavaPlugin{
 		return tickController;
 	}
 	
+	public static SkinManager getSkinManager(){
+		return skinManager;
+	}
+	
 	public static TaskChainFactory getTaskChainFactory(){
 		return TASK_CHAIN;
 	}
@@ -109,5 +120,7 @@ public class MamanghoSystem extends JavaPlugin{
 		WhisperCommand whipsercmd = new WhisperCommand();
 		this.getCommand("tell").setExecutor(whipsercmd);
 		this.getCommand("tell").setTabCompleter(whipsercmd);
+		this.getCommand("skin").setExecutor(new SkinCommand());
+		this.getCommand("hidelayer").setExecutor(new HideLayerCommand());
 	}
 }

@@ -50,6 +50,9 @@ public enum MessageSetting{
 	SYSTEM_GUI_PROCESSED_FAILED_CREATE_IMAGE("system.messages.gui.failed-create-image", "&c이미지 생성에 실패하였습니다. 파일의 크기가 너무 크거나 해당 URL이 국가에서 차단된 링크인지 여부를 확인해주세요."),
 	SYSTEM_GUI_PROCESS_DELETE_IMAGE("system.messages.gui.processing-delete-image", "&f해당 이미지를 삭제하였습니다."),
 	SYSTEM_GUI_PROCESS_FAILED_DELETE_IMAGE("system.messages.gui.processing-failed-delete-image", "&c해당 이미지를 삭제하는데 실패하였습니다. 다시 시도해주세요."),
+
+	SYSTEM_HIDE_LAYER_ON("system.messages.hide-layer-on", "&f갑옷 외형을 숨기기로 전환하였습니다."),
+	SYSTEM_HIDE_LAYER_OFF("system.messages.hide-layer-off", "&f갑옷 외형을 보이기로 전환하였습니다."),
 	
 	FORMAT_OVERWORLD_TRANSLATE_KEY("format.worlds.overworld-translate-key", "chat.hover.worlds.overworld"),
 	FORMAT_NETHER_TRANSLATE_KEY("format.worlds.nether-translate-key", "chat.hover.worlds.nether"),
@@ -57,7 +60,12 @@ public enum MessageSetting{
 	FORMAT_OVERWORLD_BANNER("format.worlds.banner.overworld", "[{\"text\": \"\uB200\", \"font\": \"ui\", \"color\": \"#ffffff\"}]"),
 	FORMAT_NETHER_BANNER("format.worlds.banner.nether", "[{\"text\": \"\uB201\", \"font\": \"ui\", \"color\": \"#ffffff\"}]"),
 	FORMAT_THE_END_BANNER("format.worlds.banner.the-end", "[{\"text\": \"\uB202\", \"font\": \"ui\", \"color\": \"#ffffff\"}]"),
-	FORMAT_PRINT_LOCATION("froamt.print-location", "{0}님의 위치 - 월드: {1}, 위치: X: {2}, Y: {3}, Z: {4}");
+	FORMAT_PRINT_LOCATION("format.print-location", "{0}님의 위치 - 월드: {1}, 위치: X: {2}, Y: {3}, Z: {4}"),
+	
+	FORMAT_SKIN_EMPTY("format.skin.empty", "&7없음"),
+	FORMAT_SKIN_MELEE("format.skin.melee-lore", "&f1번 키 입력: &a검 스킨 적용 &7(적용 중: {0}&7)|&f2번 키 입력: &6도끼 스킨 적용 &7(적용 중: {1}&7)|&f3번 키 입력: &b철퇴 스킨 적용 &7(적용 중: {2}&7)|&f4번 키 입력: &a곡괭이 스킨 적용 &7(적용 중: {3}&7)|&f5번 키 입력: &6삽 스킨 적용 &7(적용 중: {4}&7)|&f6번 키 입력: &b괭이 스킨 적용 &7(적용 중: {5}&7)|&f7번 키 입력: &a낚싯대 스킨 적용 &7(적용 중: {6}&7)"),
+	FORMAT_SKIN_BOW("format.skin.bow-lore", "&f1번 키 입력: &a활 스킨 적용 &7(적용 중: {0}&7)"),
+	FORMAT_SKIN_CROSSBOW("format.skin.crossbow-lore", "&f1번 키 입력: &a활 스킨 적용 &7(적용 중: {0}&7)");
 	
 	private String path;
 	private String def;
@@ -126,6 +134,10 @@ public enum MessageSetting{
 			return ComponentUtil.parseComponent(StringUtils.regexString(format, o));
 		}
 		return Component.empty();
+	}
+	
+	public List<String> getList(Object... o){
+		return StringUtils.regexList(cache_values.getOrDefault(this, this.getDefaultValue()), o);
 	}
 	
 	public String getValue(Object... o){
