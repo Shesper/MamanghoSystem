@@ -18,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -126,7 +125,8 @@ public class PlayerListenerHandler implements Listener{
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.LOWEST)
-	public void onEntityDeath(EntityDeathEvent event){
+	public void onEntityDeath(PlayerDeathEvent event){
+		if(event.getKeepInventory()) return;
 		if(event.getEntityType().equals(EntityType.PLAYER)){
 			Player player = (Player) event.getEntity();
 			Enchantment curse = Enchantment.getByKey(EternalBindingCurseEnchant.key);
