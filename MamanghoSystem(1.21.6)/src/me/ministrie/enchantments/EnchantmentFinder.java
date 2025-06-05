@@ -13,6 +13,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import me.ministrie.enchantments.types.DestructEnchant;
+import me.ministrie.enchantments.types.DiggingSpeedEnchant;
+import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
 import me.ministrie.enchantments.types.GlowArrowEnchant;
 import me.ministrie.enchantments.types.HealthBoostEnchant;
 import me.ministrie.enchantments.types.HighStepEnchant;
@@ -21,9 +23,12 @@ import me.ministrie.enchantments.types.PoisonArrowEnchant;
 import me.ministrie.enchantments.types.PowerDiggingEnchant;
 import me.ministrie.enchantments.types.RobustEnchant;
 import me.ministrie.enchantments.types.SprintEnchant;
+import me.ministrie.enchantments.types.StoneableCurseEnchant;
 import me.ministrie.enchantments.types.StrengthCurseEnchant;
+import me.ministrie.enchantments.types.TwohandsEnchant;
 import me.ministrie.enchantments.types.VoidCapeEnchant;
 import me.ministrie.enchantments.types.WitherArrowEnchant;
+import me.ministrie.enchantments.types.WrathCurseEnchant;
 
 public class EnchantmentFinder{
 
@@ -45,6 +50,11 @@ public class EnchantmentFinder{
 		m.put(HealthBoostEnchant.key, new HealthBoostEnchant());
 		m.put(DestructEnchant.key, new DestructEnchant());
 		m.put(VoidCapeEnchant.key, new VoidCapeEnchant());
+		m.put(DiggingSpeedEnchant.key, new DiggingSpeedEnchant());
+		m.put(StoneableCurseEnchant.key, new StoneableCurseEnchant());
+		m.put(WrathCurseEnchant.key, new WrathCurseEnchant());
+		m.put(EternalBindingCurseEnchant.key, new EternalBindingCurseEnchant());
+		m.put(TwohandsEnchant.key, new TwohandsEnchant());
 		registry = ImmutableMap.copyOf(m);
 		Map<EquipmentSlot, List<CustomEnchantment>> c = Maps.newHashMap();
 		registry.forEach((k, v) -> {

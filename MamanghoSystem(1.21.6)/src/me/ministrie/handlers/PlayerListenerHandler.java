@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -33,6 +35,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -56,6 +59,7 @@ import me.ministrie.configs.MessageSetting;
 import me.ministrie.configs.ServerSetting;
 import me.ministrie.datapack.recipe.shapes.ExclusiveShapeRecipes;
 import me.ministrie.datapack.recipe.smithings.ExclusiveSmithingRecipes;
+import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
 import me.ministrie.functions.Callback;
 import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
@@ -117,6 +121,30 @@ public class PlayerListenerHandler implements Listener{
 		InventoryHolder holder = inv.getHolder();
 		if(holder != null && holder instanceof TaskHolder task){
 			task.closeTask();
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void onEntityDeath(EntityDeathEvent event){
+		if(event.getEntityType().equals(EntityType.PLAYER)){
+			Player player = (Player) event.getEntity();
+			Enchantment curse = Enchantment.getByKey(EternalBindingCurseEnchant.key);
+			Map<EquipmentSlot, ItemStack> curseItems = Maps.newHashMap();
+			EntityEquipment equipments = player.getEquipment();
+			for(ItemStack armor : equipments.getArmorContents()){
+				if(armor == null || armor.isEmpty()) continue;
+				if(armor.containsEnchantment(curse)){
+					curseItems.put(armor.getType().getEquipmentSlot(), armor.clone());
+					equipments.setItem(armor.getType().getEquipmentSlot(), null);
+					event.getDrops().remove(armor);
+				}
+			}
+			if(!curseItems.isEmpty()){
+				ThreadUtils.runThreadSafe((e) -> {
+					curseItems.forEach((k, v) ->  equipments.setItem(k, v));
+				}, 1);
+			}
 		}
 	}
 	
