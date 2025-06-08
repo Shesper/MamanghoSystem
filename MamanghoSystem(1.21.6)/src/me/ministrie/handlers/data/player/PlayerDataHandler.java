@@ -101,7 +101,7 @@ public class PlayerDataHandler implements PlayerData{
 			config.set("data.skins.bow-skin", skin != null ? skin.getUID() : null);
 		}),
 
-		CROSSBOW_SKIN(BowSkin.class, "data.skins.weapon-skin", (data) -> {
+		CROSSBOW_SKIN(BowSkin.class, "data.skins.crossbow-skin", (data) -> {
 			return MamanghoSystem.getSkinManager().getSkin(data.getString("data.skins.crossbow-skin"));
 		}, (config, value) -> {
 			BowSkin skin = (BowSkin) value;

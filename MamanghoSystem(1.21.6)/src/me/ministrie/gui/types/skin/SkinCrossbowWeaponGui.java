@@ -205,7 +205,7 @@ public class SkinCrossbowWeaponGui implements Screen, Pageable, ButtonAction<Bow
 		pages.clear();
 		int page = 0;
 		int offset = 0;
-		List<BowSkin> list = new ArrayList<>(MamanghoSystem.getSkinManager().getBowSkins());
+		List<BowSkin> list = new ArrayList<>(MamanghoSystem.getSkinManager().getCrossbowSkins());
 		list.sort((a, b) -> {
 			return Integer.valueOf(a.getPriority()).compareTo(b.getPriority());
 		});

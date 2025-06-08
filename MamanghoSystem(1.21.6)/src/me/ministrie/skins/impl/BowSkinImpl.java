@@ -93,8 +93,8 @@ public class BowSkinImpl implements BowSkin{
 	@Override
 	public ItemStack getIcon(MamanghoPlayer viewer){
 		PlayerData data = viewer.getData();
-		WeaponSkin bowSkin = data.getData(DataEnum.BOW_SKIN);
-		WeaponSkin crossbowSkin = data.getData(DataEnum.CROSSBOW_SKIN);
+		BowSkin bowSkin = data.getData(DataEnum.BOW_SKIN);
+		BowSkin crossbowSkin = data.getData(DataEnum.CROSSBOW_SKIN);
 		String bow = bowSkin != null ? bowSkin.getName() : MessageSetting.FORMAT_SKIN_EMPTY.getValue();
 		String crossbow = crossbowSkin != null ? crossbowSkin.getName() : MessageSetting.FORMAT_SKIN_EMPTY.getValue();
 		List<String> lore = this.target.equals(ItemTarget.BOW) ? MessageSetting.FORMAT_SKIN_BOW.getList(bow)
