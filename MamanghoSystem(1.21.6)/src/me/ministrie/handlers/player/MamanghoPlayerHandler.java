@@ -39,6 +39,7 @@ import me.ministrie.utils.string.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
@@ -125,12 +126,12 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 			messages = messages.substring(0, maxlength);
 		}
 		final String finalMessages = messages;
-		Component msg = MessageSetting.CHAT_MESSAGE_FORMAT.getComponent(this.getNickname(), this.getPrefix(), messages);
-		
+		Component msg = MessageSetting.CHAT_MESSAGE_FORMAT.getComponent(this.getNickname(), this.getPrefix());
+		final Component finalComponent = msg.append(Component.text(messages).color(TextColor.fromHexString("#ffffff")));
 		MamanghoSystem.getTaskChainFactory().newChain().syncFirst(() -> {
 			return Bukkit.getOnlinePlayers();
 		}).asyncLast((users) -> {
-			users.forEach(user -> user.sendMessage(this.mixinChat(user, msg)));
+			users.forEach(user -> user.sendMessage(this.mixinChat(user, finalComponent)));
 			Bukkit.getLogger().log(Level.INFO, MessageSetting.CHAT_MESSAGE_CONSOLE_FORMAT.getValue(this.getNickname(), finalMessages));
 		}).execute();
 	}

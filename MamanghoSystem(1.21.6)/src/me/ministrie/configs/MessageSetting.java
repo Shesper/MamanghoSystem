@@ -22,7 +22,7 @@ import net.md_5.bungee.api.ChatColor;
 public enum MessageSetting{
 	
 	DATA_LOAD_FAILED("messages.data.failed-loaded", "&c데이터 로드에 실패하였습니다."),
-	CHAT_MESSAGE_FORMAT("messages.chat.message-format", "[{\"text\": \"<\", \"color\": \"#ffffff\"},{\"text\": \"{0}\", \"color\": \"#ffffff\"},{\"text\": \"{1}\", \"font\": \"prefix\", \"color\": \"#ffffff\"},{\"text\": \">\", \"color\": \"#ffffff\"},{\"text\": \" {2}\", \"color\": \"#ffffff\"}]"),
+	CHAT_MESSAGE_FORMAT("messages.chat.message-format", "[{\"text\": \"<\", \"color\": \"#ffffff\"},{\"text\": \"{0}\", \"color\": \"#ffffff\"},{\"text\": \"{1}\", \"font\": \"prefix\", \"color\": \"#ffffff\"},{\"text\": \"> \", \"color\": \"#ffffff\"}]"),
 	CHAT_EMOTICON_FORMAT("messages.chat.emoticon-format", "[{\"text\": \"<\", \"color\": \"#ffffff\"},{\"text\": \"{0}\", \"color\": \"#ffffff\"},{\"text\": \"{1}\", \"font\": \"prefix\", \"color\": \"#ffffff\"},{\"text\": \"> \", \"color\": \"#ffffff\"},{\"text\": \"{2}\", \"font\": \"{3}\", \"color\": \"#ffffff\"}]"),
 	CHAT_PAIR_EMOTICON_FORMAT("messages.chat.pair-emoticon-format", "[{\"text\": \"<\", \"color\": \"#ffffff\"},{\"text\": \"{0}\", \"color\": \"#ffffff\"},{\"text\": \"{1}\", \"font\": \"prefix\", \"color\": \"#ffffff\"},{\"text\": \"> \", \"color\": \"#ffffff\"},{\"text\": \"{2}\", \"font\": \"{3}\", \"color\": \"#ffffff\"},{\"text\": \" \", \"font\": \"space\"},{\"text\": \"{4}\", \"font\": \"{5}\", \"color\": \"#ffffff\"}]"),
 	CHAT_MESSAGE_CONSOLE_FORMAT("messages.chat.messages-console-format", "[Chatting] <{0}> {1}"),
@@ -65,7 +65,7 @@ public enum MessageSetting{
 	FORMAT_SKIN_EMPTY("format.skin.empty", "&7없음"),
 	FORMAT_SKIN_MELEE("format.skin.melee-lore", "&f1번 키 입력: &a검 스킨 적용 &7(적용 중: {0}&7)|&f2번 키 입력: &6도끼 스킨 적용 &7(적용 중: {1}&7)|&f3번 키 입력: &b철퇴 스킨 적용 &7(적용 중: {2}&7)|&f4번 키 입력: &a곡괭이 스킨 적용 &7(적용 중: {3}&7)|&f5번 키 입력: &6삽 스킨 적용 &7(적용 중: {4}&7)|&f6번 키 입력: &b괭이 스킨 적용 &7(적용 중: {5}&7)|&f7번 키 입력: &a낚싯대 스킨 적용 &7(적용 중: {6}&7)"),
 	FORMAT_SKIN_BOW("format.skin.bow-lore", "&f1번 키 입력: &a활 스킨 적용 &7(적용 중: {0}&7)"),
-	FORMAT_SKIN_CROSSBOW("format.skin.crossbow-lore", "&f1번 키 입력: &a활 스킨 적용 &7(적용 중: {0}&7)");
+	FORMAT_SKIN_CROSSBOW("format.skin.crossbow-lore", "&f1번 키 입력: &a쇠뇌 스킨 적용 &7(적용 중: {0}&7)");
 	
 	private String path;
 	private String def;

@@ -53,7 +53,6 @@ import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent.EquipmentChange;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -168,7 +167,7 @@ public class PlayerListenerHandler implements Listener{
 		event.deathMessage(ComponentUtil.extractTranslatable(event.deathMessage()));
 	}
 	
-	@EventHandler(priority=EventPriority.LOW)
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void onChat(AsyncChatEvent event){
 		if(event.isCancelled()) return;
 		event.setCancelled(true);
@@ -184,9 +183,6 @@ public class PlayerListenerHandler implements Listener{
 			if(user.getProcessScreen().writeValue(user.getProcessScreen().getProcess(), messages)) return;
 		}
 		user.say(messages);
-		DiscordSRV.getPlugin().processChatMessage(player, 
-				ComponentUtil.getComponentPlainText(event.message()), 
-				DiscordSRV.getPlugin().getMainChatChannel(), false, event);
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)

@@ -30,6 +30,7 @@ import me.ministrie.managers.DamageTickController;
 import me.ministrie.managers.EmoticonManager;
 import me.ministrie.managers.PlayerManager;
 import me.ministrie.managers.SkinManager;
+import me.ministrie.packet.protocol.listener.MessagesListener;
 import me.ministrie.packet.protocol.listener.ServerLogin;
 import me.ministrie.packet.protocol.listener.ServerRespawn;
 import me.ministrie.packet.protocol.listener.SkinListener;
@@ -65,6 +66,7 @@ public class MamanghoSystem extends JavaPlugin{
 		tickController = new DamageTickController();
 		skinManager = new SkinManager();
 		LuckpermsListenerHandler.start();
+		ProtocolLibrary.getProtocolManager().addPacketListener(new MessagesListener(this));
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerLogin(this));
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerRespawn(this));
 		ProtocolLibrary.getProtocolManager().addPacketListener(new SkinListener(this));
