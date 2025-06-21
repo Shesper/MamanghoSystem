@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.Collection;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.comphenix.protocol.PacketType;

@@ -53,6 +53,9 @@ import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent.EquipmentChange;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -183,6 +186,10 @@ public class PlayerListenerHandler implements Listener{
 			if(user.getProcessScreen().writeValue(user.getProcessScreen().getProcess(), messages)) return;
 		}
 		user.say(messages);
+		SchedulerUtil.runTaskAsynchronously(MamanghoSystem.getInstance(), () -> {
+			String json = ComponentUtil.componentToGson(event.message());
+			DiscordSRV.getPlugin().processChatMessage(player, GsonComponentSerializer.gson().deserialize(json), DiscordSRV.getPlugin().getOptionalChannel("global"), false, event);
+		});
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
