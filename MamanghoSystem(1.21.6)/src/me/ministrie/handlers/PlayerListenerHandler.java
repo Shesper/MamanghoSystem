@@ -27,6 +27,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
@@ -36,6 +37,7 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -48,7 +50,9 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+import org.bukkit.inventory.view.AnvilView;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -82,6 +86,26 @@ import net.kyori.adventure.text.format.TextColor;
 
 public class PlayerListenerHandler implements Listener{
 
+	@EventHandler
+	public void onPrepareAnvil(PrepareAnvilEvent event){
+		AnvilInventory inv = event.getInventory();
+		ItemStack result = inv.getResult();
+		AnvilView view = event.getView();
+		int itemCost = 0;
+		int viewCost = view.getRepairCost();
+		if(result != null){
+			ItemMeta meta = result.getItemMeta();
+			if(meta instanceof Repairable repair){
+				itemCost = repair.getRepairCost();
+			}
+		}
+		if(itemCost >= 40 || viewCost >= 40){
+			view.setRepairCost(39);
+			view.setMaximumRepairCost(99);
+			ProtocolTools.updateAnvilInventory(event);
+		}
+	}
+	
 	@EventHandler
 	public void onChangeGamemode(PlayerGameModeChangeEvent event){
 		Player player = event.getPlayer();

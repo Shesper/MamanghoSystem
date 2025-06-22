@@ -6,7 +6,10 @@ import java.util.Collection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryAnvil;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.view.AnvilView;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -25,9 +28,25 @@ import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 
 import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.main.MamanghoSystem;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.PacketPlayOutWindowData;
 
 public class ProtocolTools{
 
+	public static void updateAnvilInventory(PrepareAnvilEvent event){
+		if(event.getView().getPlayer() instanceof Player viewer){
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MamanghoSystem.getInstance(), () -> {
+				if(viewer.isOnline()){
+					AnvilView view = event.getView();
+					int cost = view.getRepairCost();
+					CraftInventoryAnvil gui = (CraftInventoryAnvil) event.getInventory();
+					PacketPlayOutWindowData packet = new PacketPlayOutWindowData(gui.getInventory().an_(), 0, cost);
+					sendPacket(viewer, packet);
+				}
+			});
+		}
+	}
+	
 	public static void setFakeAboveName(MamanghoPlayer user, String fakename){
 		Player player = user.getPlayer();
 		UUID uuid = player.getUniqueId();
@@ -82,5 +101,10 @@ public class ProtocolTools{
 			protocolManager.sendServerPacket(listener, addPacket);
 			listener.showPlayer(MamanghoSystem.getInstance(), other);
 		}
+	}
+	
+	public static void sendPacket(Player player, Packet<?> packet){
+		CraftPlayer p = (CraftPlayer) player;
+		p.getHandle().g.a(packet);
 	}
 }

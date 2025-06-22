@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -92,7 +93,7 @@ public class SyncBlockBreak extends BukkitRunnable{
 				/* 뜨거운 걸음 관련 인챈트가 추가될 경우 여기에 추가 작업을 시행해야함 */
 				Location loc = b.getLocation().add(0.5D, 0.5D, 0.5D);
 				b.getWorld().spawnParticle(Particle.BLOCK_CRUMBLE, loc, 35, 0.5D/3D, 0.5D/3D, 0.5D/3D, 0.12D, b.getBlockData());
-				b.getWorld().playSound(loc, b.getBlockData().getSoundGroup().getBreakSound(), 0.7f, 1.0f);
+				b.getWorld().playSound(loc, b.getBlockData().getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.7f, 1.0f);
 				b.breakNaturally(item);
 			}
 		}

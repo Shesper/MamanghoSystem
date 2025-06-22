@@ -35,9 +35,13 @@ public class PowerDiggingEnchant extends CustomEnchantment{
 				boolean isPickaxe = inv.getItemInMainHand() != null && inv.getItemInMainHand().getType().name().contains("_PICKAXE");
 				boolean isShovel = inv.getItemInMainHand() != null && inv.getItemInMainHand().getType().name().contains("_SHOVEL");
 				if(isPickaxe){
-					SyncBlockBreak.run(player, event.getBlock().getLocation(), inv.getItemInMainHand());
+					if(SyncBlockBreak.checkValid(player, event.getBlock())){
+						SyncBlockBreak.run(player, event.getBlock().getLocation(), inv.getItemInMainHand());
+					}
 				}else if(isShovel){
-					SyncBlockBreakShovel.run(player, event.getBlock().getLocation(), inv.getItemInMainHand());
+					if(SyncBlockBreakShovel.checkValid(player, event.getBlock())){
+						SyncBlockBreakShovel.run(player, event.getBlock().getLocation(), inv.getItemInMainHand());
+					}
 				}
 			}
 		}
