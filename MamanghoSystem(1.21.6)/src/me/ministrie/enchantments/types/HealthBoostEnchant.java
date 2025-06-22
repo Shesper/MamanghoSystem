@@ -30,7 +30,11 @@ public class HealthBoostEnchant extends CustomEnchantment{
 	public void onEquip(Player player, EquipmentSlot slot, int level){
 		AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
 		NamespacedKey slotKey = NamespacedKey.minecraft(KEY_FORMAT.formatted(slot.name().toLowerCase()));
-		if(attribute.getModifier(slotKey) != null) return;
+		if(attribute.getModifier(slotKey) != null){
+			//player.sendMessage("[healthboost] already exist modifier.");
+			return;
+		}
+		//player.sendMessage("[healthboost] applied modifier.");
 		attribute.addModifier(new AttributeModifier(slotKey, 0.5*level, Operation.ADD_NUMBER, EquipmentSlotGroup.ANY));
 	}
 
@@ -45,6 +49,7 @@ public class HealthBoostEnchant extends CustomEnchantment{
 	public void onUnequip(Player player, EquipmentSlot slot, int level){
 		AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
 		attribute.removeModifier(NamespacedKey.minecraft(KEY_FORMAT.formatted(slot.name().toLowerCase())));
+		//player.sendMessage("[healthboost] remove modifier.");
 	}
 
 	@Override

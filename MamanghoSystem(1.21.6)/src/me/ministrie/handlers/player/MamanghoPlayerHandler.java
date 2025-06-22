@@ -204,12 +204,12 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 	}
 
 	protected Component mixinChat(Player viewer, Component base){
-		Pair<HoverEvent<Component>, ClickEvent> hoverFor = this.getHoverFor(viewer);
+		Pair<HoverEvent<Component>, ClickEvent> hoverFor = this.getHoverFor(this.handler, viewer);
 		return hoverFor.getValue() != null ? base.hoverEvent(hoverFor.getKey()).clickEvent(hoverFor.getValue()) :
 			base.hoverEvent(hoverFor.getKey());
 	}
 	
-	protected Pair<HoverEvent<Component>, ClickEvent> getHoverFor(Player viewer){
+	protected Pair<HoverEvent<Component>, ClickEvent> getHoverFor(Player sender, Player viewer){
 		Component hoverComponent = ComponentUtil.translatiableFrom("chat.hover.targetlocation", this.getDisplaynameWithPrefix("#ffffff"));
 		boolean share = this.getData().<Boolean>getData(DataEnum.SHARE_LOCATION);
 		ClickEvent clickevent = null;
@@ -217,15 +217,15 @@ public class MamanghoPlayerHandler implements MamanghoPlayer{
 			hoverComponent = hoverComponent.append(Component.newline());
 			hoverComponent = hoverComponent.append(ComponentUtil.translatiableFrom("chat.hover.targetlocation-blocked"));
 		}else{
-			Trio<String, String, String> worldtranslates = this.getWorldTranslateKey(viewer.getWorld());
+			Trio<String, String, String> worldtranslates = this.getWorldTranslateKey(sender.getWorld());
 			Component worldname = ComponentUtil.translatiableFrom(worldtranslates.getFirst());
 			Component worldbanner = ComponentUtil.parseComponent(worldtranslates.getSecond());
 			
 			hoverComponent = hoverComponent.append(Component.newline());
 			hoverComponent = hoverComponent.append(ComponentUtil.translatiableFrom("chat.hover.world", worldbanner, worldname));
 
-			Location location = viewer.getLocation();
-			Biome biome = viewer.getWorld().getBiome(location);
+			Location location = sender.getLocation();
+			Biome biome = sender.getWorld().getBiome(location);
 			BiomeSummary biomeSummary = MamanghoSystem.getBiomeInformation().getBiomeSummary(biome);
 			Component biomebanner = ComponentUtil.parseComponent(biomeSummary.getBanner());
 			Component biomename = ComponentUtil.translatiableFrom(biomeSummary.getTranslateKey());

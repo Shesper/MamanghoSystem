@@ -41,6 +41,7 @@ public class SkinListener extends PacketAdapter{
 		PacketContainer packet = event.getPacket();
 		Player player = event.getPlayer();
 		if(event.getPacketType().equals(PacketType.Play.Server.ENTITY_EQUIPMENT)){
+			/*
 			Entity entity = packet.getEntityModifier(event).read(0);
 			if(entity instanceof Player target){
 				MamanghoPlayer user = MamanghoPlayer.getPlayer(target);
@@ -57,7 +58,7 @@ public class SkinListener extends PacketAdapter{
 					}
 					packet.getSlotStackPairLists().write(0, slots);
 				}
-			}
+			}*/
 		}else if(event.getPacketType().equals(PacketType.Play.Server.SET_SLOT)){
 			if(player.getGameMode().equals(GameMode.CREATIVE)) return;
 			MamanghoPlayer user = MamanghoPlayer.getPlayer(player);
