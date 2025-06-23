@@ -34,6 +34,7 @@ import me.ministrie.packet.protocol.listener.MessagesListener;
 import me.ministrie.packet.protocol.listener.ServerLogin;
 import me.ministrie.packet.protocol.listener.ServerRespawn;
 import me.ministrie.packet.protocol.listener.SkinListener;
+import me.ministrie.schedulers.EntityAttributeModifier;
 import me.ministrie.schedulers.UserTabListUpdater;
 
 public class MamanghoSystem extends JavaPlugin{
@@ -47,6 +48,7 @@ public class MamanghoSystem extends JavaPlugin{
 	private static DamageTickController tickController;
 	private static UserTabListUpdater tabUpdater;
 	private static SkinManager skinManager;
+	private static EntityAttributeModifier modifier;
 	
 	@Override
 	public void onEnable(){
@@ -65,6 +67,7 @@ public class MamanghoSystem extends JavaPlugin{
 		biomeSummary = new BiomeInformation();
 		tickController = new DamageTickController();
 		skinManager = new SkinManager();
+		modifier = new EntityAttributeModifier();
 		LuckpermsListenerHandler.start();
 		ProtocolLibrary.getProtocolManager().addPacketListener(new MessagesListener(this));
 		ProtocolLibrary.getProtocolManager().addPacketListener(new ServerLogin(this));
@@ -110,6 +113,10 @@ public class MamanghoSystem extends JavaPlugin{
 	
 	public static TaskChainFactory getTaskChainFactory(){
 		return TASK_CHAIN;
+	}
+	
+	public static EntityAttributeModifier getModifier(){
+		return modifier;
 	}
 	
 	private void bukkitCommandLoad(){

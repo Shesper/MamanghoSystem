@@ -18,7 +18,9 @@ public enum ServerSetting{
 	
 	RESOURCEPACK_URL("config.system.resourcepack-url", ""),
 	RESOURCEPACK_UUID("config.system.resourcepack-uuid", UUID.randomUUID().toString()),
-	RESOURCEPACK_SHA1_HASH("config.system.resourcepack-sha1-hash", "");
+	RESOURCEPACK_SHA1_HASH("config.system.resourcepack-sha1-hash", ""),
+	
+	HAPPY_GHAST_FLY_SPEED("config.system.game.attributes.happy-ghast-fly-speed", 0.2);
 
 	public static final String DIR = "./plugins/MamanghoSystem/config.yml";
 	public static YamlConfiguration config = null;
