@@ -2,8 +2,10 @@ package me.ministrie.enchantments;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,6 +27,7 @@ import me.ministrie.enchantments.types.RobustEnchant;
 import me.ministrie.enchantments.types.SprintEnchant;
 import me.ministrie.enchantments.types.StoneableCurseEnchant;
 import me.ministrie.enchantments.types.StrengthCurseEnchant;
+import me.ministrie.enchantments.types.TimberEnchant;
 import me.ministrie.enchantments.types.TwohandsEnchant;
 import me.ministrie.enchantments.types.VoidCapeEnchant;
 import me.ministrie.enchantments.types.WitherArrowEnchant;
@@ -55,6 +58,7 @@ public class EnchantmentFinder{
 		m.put(WrathCurseEnchant.key, new WrathCurseEnchant());
 		m.put(EternalBindingCurseEnchant.key, new EternalBindingCurseEnchant());
 		m.put(TwohandsEnchant.key, new TwohandsEnchant());
+		m.put(TimberEnchant.key, new TimberEnchant());
 		registry = ImmutableMap.copyOf(m);
 		Map<EquipmentSlot, List<CustomEnchantment>> c = Maps.newHashMap();
 		registry.forEach((k, v) -> {
@@ -96,6 +100,30 @@ public class EnchantmentFinder{
 	
 	public static CustomEnchantment getEnchantment(NamespacedKey key){
 		return registry.get(key);
+	}
+	
+	public static boolean hasEnchantmentLevel(ItemStack item, NamespacedKey key){
+		if(item == null || item.getItemMeta() == null) return false;
+		CustomEnchantment findEnchant = getEnchantment(key);
+		if(findEnchant == null) return false;
+		for(Entry<Enchantment, Integer> e : item.getItemMeta().getEnchants().entrySet()){
+			if(e.getKey().getKey().equals(findEnchant.getKey())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static int getEnchantmentLevel(ItemStack item, NamespacedKey key){
+		if(item == null || item.getItemMeta() == null) return 0;
+		CustomEnchantment findEnchant = getEnchantment(key);
+		if(findEnchant == null) return 0;
+		for(Entry<Enchantment, Integer> e : item.getItemMeta().getEnchants().entrySet()){
+			if(e.getKey().getKey().equals(findEnchant.getKey())){
+				return e.getValue();
+			}
+		}
+		return 0;
 	}
 	
 	public static Map<CustomEnchantment, Integer> findEnchantments(ItemStack item){

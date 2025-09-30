@@ -15,7 +15,7 @@ import me.ministrie.main.MamanghoSystem;
 
 public class EntityAttributeModifier{
 
-	private NamespacedKey HAPPY_GHAST_ATTRIBUTE_KEY = NamespacedKey.minecraft("happy_ghast_speed");
+	private static final NamespacedKey HAPPY_GHAST_ATTRIBUTE_KEY = NamespacedKey.minecraft("happy_ghast_speed");
 	private double speed;
 	private BukkitTask task;
 	

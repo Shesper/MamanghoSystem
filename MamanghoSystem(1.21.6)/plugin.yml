@@ -2,8 +2,8 @@ name: MamanghoSystem
 main: me.ministrie.main.MamanghoSystem
 author: Ministrie
 authors: [최태성, Ministrie]
-version: 1.0.2
-depend: [ProtocolLib, LuckPerms, ImageFrame, DiscordSRV]
+version: 1.0.3
+depend: [ProtocolLib, LuckPerms, ImageFrame, DiscordSRV, UltimateTimber]
 softdepend: []
 api-version: 1.21
 

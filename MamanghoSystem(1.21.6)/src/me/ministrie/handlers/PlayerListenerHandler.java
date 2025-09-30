@@ -56,6 +56,7 @@ import org.bukkit.inventory.view.AnvilView;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.songoda.ultimatetimber.events.TreeFallEvent;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -68,7 +69,10 @@ import me.ministrie.configs.MessageSetting;
 import me.ministrie.configs.ServerSetting;
 import me.ministrie.datapack.recipe.shapes.ExclusiveShapeRecipes;
 import me.ministrie.datapack.recipe.smithings.ExclusiveSmithingRecipes;
+import me.ministrie.enchantments.CustomEnchantment;
+import me.ministrie.enchantments.EnchantmentFinder;
 import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
+import me.ministrie.enchantments.types.TimberEnchant;
 import me.ministrie.functions.Callback;
 import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
@@ -86,6 +90,15 @@ import net.kyori.adventure.text.format.TextColor;
 
 public class PlayerListenerHandler implements Listener{
 
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void onTreeFallEvent(TreeFallEvent event){
+		ItemStack hand = event.getPlayer().getInventory().getItemInMainHand();
+		if(hand == null) return;
+		if(!EnchantmentFinder.hasEnchantmentLevel(hand, TimberEnchant.key)){
+			event.setCancelled(true);
+		}
+	}
+	
 	@EventHandler
 	public void onPrepareAnvil(PrepareAnvilEvent event){
 		AnvilInventory inv = event.getInventory();
