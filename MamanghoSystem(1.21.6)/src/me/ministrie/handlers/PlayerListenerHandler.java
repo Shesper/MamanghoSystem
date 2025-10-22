@@ -34,6 +34,7 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -56,7 +57,6 @@ import org.bukkit.inventory.view.AnvilView;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.songoda.ultimatetimber.events.TreeFallEvent;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -69,10 +69,7 @@ import me.ministrie.configs.MessageSetting;
 import me.ministrie.configs.ServerSetting;
 import me.ministrie.datapack.recipe.shapes.ExclusiveShapeRecipes;
 import me.ministrie.datapack.recipe.smithings.ExclusiveSmithingRecipes;
-import me.ministrie.enchantments.CustomEnchantment;
-import me.ministrie.enchantments.EnchantmentFinder;
 import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
-import me.ministrie.enchantments.types.TimberEnchant;
 import me.ministrie.functions.Callback;
 import me.ministrie.gui.Screen;
 import me.ministrie.gui.ScreenHolder;
@@ -89,15 +86,6 @@ import me.ministrie.utils.component.ComponentUtil;
 import net.kyori.adventure.text.format.TextColor;
 
 public class PlayerListenerHandler implements Listener{
-
-	@EventHandler(priority=EventPriority.LOWEST)
-	public void onTreeFallEvent(TreeFallEvent event){
-		ItemStack hand = event.getPlayer().getInventory().getItemInMainHand();
-		if(hand == null) return;
-		if(!EnchantmentFinder.hasEnchantmentLevel(hand, TimberEnchant.key)){
-			event.setCancelled(true);
-		}
-	}
 	
 	@EventHandler
 	public void onPrepareAnvil(PrepareAnvilEvent event){
@@ -356,6 +344,14 @@ public class PlayerListenerHandler implements Listener{
 				event.setDamage(victim.getReduceDamage(event.getDamage()));
 				victim.onTrigger(event);
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onItemDamageEvent(PlayerItemDamageEvent event){
+		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
+		if(player != null){
+			player.onTrigger(event);
 		}
 	}
 	

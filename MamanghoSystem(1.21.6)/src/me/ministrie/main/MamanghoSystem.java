@@ -26,6 +26,7 @@ import me.ministrie.configs.SoundSetting;
 import me.ministrie.emoticon.EmoticonBookmark;
 import me.ministrie.handlers.LuckpermsListenerHandler;
 import me.ministrie.handlers.PlayerListenerHandler;
+import me.ministrie.handlers.TimberListener;
 import me.ministrie.managers.DamageTickController;
 import me.ministrie.managers.EmoticonManager;
 import me.ministrie.managers.PlayerManager;
@@ -57,6 +58,12 @@ public class MamanghoSystem extends JavaPlugin{
 		TASK_CHAIN = BukkitTaskChainFactory.create(this);
 		ConfigurationSerialization.registerClass(EmoticonBookmark.class);
 		Bukkit.getPluginManager().registerEvents(new PlayerListenerHandler(), this);
+		if(Bukkit.getPluginManager().getPlugin("UltimateTimber") != null){
+			Bukkit.getPluginManager().registerEvents(new TimberListener(), this);
+			this.getLogger().info("UltimateTimber plugin listener hook.");
+		}else{
+			this.getLogger().warning("UltimateTimber plugin not found. timber enchantment is disabled.");
+		}
 		ServerSetting.load();
 		MessageSetting.load();
 		IconSetting.load();

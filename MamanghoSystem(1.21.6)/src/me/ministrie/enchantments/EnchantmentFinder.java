@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,11 +15,16 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import me.ministrie.enchantments.types.AntiGravityEnchant;
 import me.ministrie.enchantments.types.DestructEnchant;
 import me.ministrie.enchantments.types.DiggingSpeedEnchant;
+import me.ministrie.enchantments.types.DwarfEnchant;
 import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
+import me.ministrie.enchantments.types.FrenzyEnchant;
+import me.ministrie.enchantments.types.GiantEnchant;
 import me.ministrie.enchantments.types.GlowArrowEnchant;
 import me.ministrie.enchantments.types.HealthBoostEnchant;
+import me.ministrie.enchantments.types.HeavyArmorEnchant;
 import me.ministrie.enchantments.types.HighStepEnchant;
 import me.ministrie.enchantments.types.LongHandsEnchant;
 import me.ministrie.enchantments.types.PoisonArrowEnchant;
@@ -59,6 +65,11 @@ public class EnchantmentFinder{
 		m.put(EternalBindingCurseEnchant.key, new EternalBindingCurseEnchant());
 		m.put(TwohandsEnchant.key, new TwohandsEnchant());
 		m.put(TimberEnchant.key, new TimberEnchant());
+		m.put(GiantEnchant.key, new GiantEnchant());
+		m.put(DwarfEnchant.key, new DwarfEnchant());
+		m.put(HeavyArmorEnchant.key, new HeavyArmorEnchant());
+		m.put(AntiGravityEnchant.key, new AntiGravityEnchant());
+		m.put(FrenzyEnchant.key, new FrenzyEnchant());
 		registry = ImmutableMap.copyOf(m);
 		Map<EquipmentSlot, List<CustomEnchantment>> c = Maps.newHashMap();
 		registry.forEach((k, v) -> {
@@ -100,6 +111,50 @@ public class EnchantmentFinder{
 	
 	public static CustomEnchantment getEnchantment(NamespacedKey key){
 		return registry.get(key);
+	}
+	
+	public static int getCurseEnchantCount(Player player){
+		int count = 0;
+		for(ItemStack armor : player.getInventory().getArmorContents()){
+			if(armor == null) continue;
+			for(Entry<Enchantment, Integer> e : armor.getEnchantments().entrySet()){
+				if(e.getKey().isCursed()){
+					count++;
+				}else{
+					CustomEnchantment custom = getEnchantment(e.getKey().getKey());
+					if(custom != null && custom instanceof ICurse){
+						count++;
+					}
+				}
+			}
+		}
+		ItemStack hand = player.getInventory().getItemInMainHand();
+		ItemStack offhand = player.getInventory().getItemInOffHand();
+		if(hand != null){
+			for(Entry<Enchantment, Integer> e : hand.getEnchantments().entrySet()){
+				if(e.getKey().isCursed()){
+					count++;
+				}else{
+					CustomEnchantment custom = getEnchantment(e.getKey().getKey());
+					if(custom != null && custom instanceof ICurse){
+						count++;
+					}
+				}
+			}
+		}
+		if(offhand != null){
+			for(Entry<Enchantment, Integer> e : offhand.getEnchantments().entrySet()){
+				if(e.getKey().isCursed()){
+					count++;
+				}else{
+					CustomEnchantment custom = getEnchantment(e.getKey().getKey());
+					if(custom != null && custom instanceof ICurse){
+						count++;
+					}
+				}
+			}
+		}
+		return count;
 	}
 	
 	public static boolean hasEnchantmentLevel(ItemStack item, NamespacedKey key){

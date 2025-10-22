@@ -8,9 +8,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import me.ministrie.enchantments.CustomEnchantment;
-import me.ministrie.enchantments.ICurse;
 
-public class TwohandsEnchant extends CustomEnchantment implements ICurse{
+public class TwohandsEnchant extends CustomEnchantment{
 
 	public static final NamespacedKey key = NamespacedKey.minecraft("twohands");
 	

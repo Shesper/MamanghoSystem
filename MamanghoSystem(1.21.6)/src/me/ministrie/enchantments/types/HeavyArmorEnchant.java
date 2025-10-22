@@ -1,16 +1,14 @@
 package me.ministrie.enchantments.types;
 
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.ministrie.enchantments.CustomEnchantment;
-import me.ministrie.enchantments.ICurse;
 
-public class StoneableCurseEnchant extends CustomEnchantment implements ICurse{
+public class HeavyArmorEnchant extends CustomEnchantment{
 
-	public static final NamespacedKey key = NamespacedKey.minecraft("stoneable_curse");
+	public static final NamespacedKey key = NamespacedKey.minecraft("heavyarmor");
 	
 	@Override
 	public NamespacedKey getKey(){
@@ -20,14 +18,6 @@ public class StoneableCurseEnchant extends CustomEnchantment implements ICurse{
 	@Override
 	public EquipmentSlot[] getSlots(){
 		return new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-	}
-	
-	@Override
-	public double getReduceDamage(Player victim, double damage, int level){
-		if(victim instanceof LivingEntity){
-			return damage * (1.0 - ((double)level * 0.0625));
-		}
-		return damage;
 	}
 	
 	@Override

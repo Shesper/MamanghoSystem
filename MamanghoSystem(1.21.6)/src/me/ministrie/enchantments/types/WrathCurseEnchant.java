@@ -14,8 +14,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
 import me.ministrie.enchantments.CustomEnchantment;
+import me.ministrie.enchantments.ICurse;
 
-public class WrathCurseEnchant extends CustomEnchantment{
+public class WrathCurseEnchant extends CustomEnchantment implements ICurse{
 
 	public static final NamespacedKey key = NamespacedKey.minecraft("wrath_curse");
 	

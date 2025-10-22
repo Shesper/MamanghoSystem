@@ -5,8 +5,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.ministrie.enchantments.CustomEnchantment;
+import me.ministrie.enchantments.ICurse;
 
-public class EternalBindingCurseEnchant extends CustomEnchantment{
+public class EternalBindingCurseEnchant extends CustomEnchantment implements ICurse{
 
 	public static final NamespacedKey key = NamespacedKey.minecraft("eternal_binding_curse");
 	

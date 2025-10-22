@@ -2,11 +2,10 @@ package me.ministrie.packet.protocol;
 
 import java.util.Collections;
 import java.util.UUID;
-import java.util.Collection;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryAnvil;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryAnvil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.view.AnvilView;
@@ -17,9 +16,10 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
@@ -40,7 +40,7 @@ public class ProtocolTools{
 					AnvilView view = event.getView();
 					int cost = view.getRepairCost();
 					CraftInventoryAnvil gui = (CraftInventoryAnvil) event.getInventory();
-					PacketPlayOutWindowData packet = new PacketPlayOutWindowData(gui.getInventory().an_(), 0, cost);
+					PacketPlayOutWindowData packet = new PacketPlayOutWindowData(gui.getInventory().ap_(), 0, cost);
 					sendPacket(viewer, packet);
 				}
 			});
@@ -51,11 +51,11 @@ public class ProtocolTools{
 		Player player = user.getPlayer();
 		UUID uuid = player.getUniqueId();
 		WrappedGameProfile fakeProfile = new WrappedGameProfile(uuid, fakename);
-		GameProfile nmsProfile = ((CraftPlayer) player).getProfile();
-		Collection<Property> textures = nmsProfile.getProperties().get("textures");
-	    textures.forEach(property -> {
-	    	fakeProfile.getProperties().put("textures", WrappedSignedProperty.fromHandle(property));
-	    });
+		Multimap<String, WrappedSignedProperty> properties = HashMultimap.create();
+		player.getPlayerProfile().getProperties().forEach(prop -> {
+			properties.put(prop.getName(), WrappedSignedProperty.fromHandle(new Property(prop.getName(), prop.getValue(), prop.getSignature())));
+		});
+		fakeProfile.getProperties().putAll(properties);
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 		PacketContainer removePacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO_REMOVE);
 		PlayerInfoData infoData = new PlayerInfoData(fakeProfile, 0, NativeGameMode.fromBukkit(player.getGameMode()), WrappedChatComponent.fromText(fakename));
@@ -82,12 +82,12 @@ public class ProtocolTools{
 			MamanghoPlayer otherPlayer = MamanghoSystem.getPlayerManager().getPlayer(other);
 			if(otherPlayer == null) continue;
 			String displayname = otherPlayer.getPlainDisplaynameWithPrefix();
-			GameProfile nmsProfile = ((CraftPlayer) other).getProfile();
 			WrappedGameProfile fakeProfile = new WrappedGameProfile(other.getUniqueId(), displayname);
-			Collection<Property> textures = nmsProfile.getProperties().get("textures");
-		    textures.forEach(property -> {
-		    	fakeProfile.getProperties().put("textures", WrappedSignedProperty.fromHandle(property));
-		    });
+			Multimap<String, WrappedSignedProperty> properties = HashMultimap.create();
+			other.getPlayerProfile().getProperties().forEach(prop -> {
+				properties.put(prop.getName(), WrappedSignedProperty.fromHandle(new Property(prop.getName(), prop.getValue(), prop.getSignature())));
+			});
+			fakeProfile.getProperties().putAll(properties);
 			PacketContainer removePacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO_REMOVE);
 			PlayerInfoData infoData = new PlayerInfoData(fakeProfile, 0, NativeGameMode.fromBukkit(other.getGameMode()), WrappedChatComponent.fromText(displayname));
 			removePacket.getUUIDLists().write(0, Lists.newArrayList(other.getUniqueId()));

@@ -1,16 +1,15 @@
 package me.ministrie.enchantments.types;
 
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.ministrie.enchantments.CustomEnchantment;
-import me.ministrie.enchantments.ICurse;
 
-public class StoneableCurseEnchant extends CustomEnchantment implements ICurse{
+public class DwarfEnchant extends CustomEnchantment{
 
-	public static final NamespacedKey key = NamespacedKey.minecraft("stoneable_curse");
+	public static final NamespacedKey key = NamespacedKey.minecraft("dwarf");
 	
 	@Override
 	public NamespacedKey getKey(){
@@ -19,15 +18,14 @@ public class StoneableCurseEnchant extends CustomEnchantment implements ICurse{
 
 	@Override
 	public EquipmentSlot[] getSlots(){
-		return new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+		return new EquipmentSlot[]{EquipmentSlot.CHEST};
 	}
 	
 	@Override
-	public double getReduceDamage(Player victim, double damage, int level){
-		if(victim instanceof LivingEntity){
-			return damage * (1.0 - ((double)level * 0.0625));
+	public void onTrigger(Player player, EquipmentSlot slot, Object value, int level){
+		if(value instanceof EntityShootBowEvent event){
+			event.setCancelled(true);
 		}
-		return damage;
 	}
 	
 	@Override
