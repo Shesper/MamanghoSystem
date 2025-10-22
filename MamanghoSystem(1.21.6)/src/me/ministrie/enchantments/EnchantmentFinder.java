@@ -21,11 +21,13 @@ import me.ministrie.enchantments.types.DiggingSpeedEnchant;
 import me.ministrie.enchantments.types.DwarfEnchant;
 import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
 import me.ministrie.enchantments.types.FrenzyEnchant;
+import me.ministrie.enchantments.types.GeasGiftEnchant;
 import me.ministrie.enchantments.types.GiantEnchant;
 import me.ministrie.enchantments.types.GlowArrowEnchant;
 import me.ministrie.enchantments.types.HealthBoostEnchant;
 import me.ministrie.enchantments.types.HeavyArmorEnchant;
 import me.ministrie.enchantments.types.HighStepEnchant;
+import me.ministrie.enchantments.types.LightningStrikeEnchant;
 import me.ministrie.enchantments.types.LongHandsEnchant;
 import me.ministrie.enchantments.types.PoisonArrowEnchant;
 import me.ministrie.enchantments.types.PowerDiggingEnchant;
@@ -37,6 +39,7 @@ import me.ministrie.enchantments.types.TimberEnchant;
 import me.ministrie.enchantments.types.TwohandsEnchant;
 import me.ministrie.enchantments.types.VoidCapeEnchant;
 import me.ministrie.enchantments.types.WitherArrowEnchant;
+import me.ministrie.enchantments.types.WitheringStingEnchant;
 import me.ministrie.enchantments.types.WrathCurseEnchant;
 
 public class EnchantmentFinder{
@@ -70,6 +73,9 @@ public class EnchantmentFinder{
 		m.put(HeavyArmorEnchant.key, new HeavyArmorEnchant());
 		m.put(AntiGravityEnchant.key, new AntiGravityEnchant());
 		m.put(FrenzyEnchant.key, new FrenzyEnchant());
+		m.put(GeasGiftEnchant.key, new GeasGiftEnchant());
+		m.put(LightningStrikeEnchant.key, new LightningStrikeEnchant());
+		m.put(WitheringStingEnchant.key, new WitheringStingEnchant());
 		registry = ImmutableMap.copyOf(m);
 		Map<EquipmentSlot, List<CustomEnchantment>> c = Maps.newHashMap();
 		registry.forEach((k, v) -> {

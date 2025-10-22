@@ -9,8 +9,11 @@ public enum WeaponType{
 			Material.NETHERITE_SWORD, Material.STONE_SWORD}),
 	AXE(new Material[]{Material.WOODEN_AXE, Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE,
 			Material.NETHERITE_AXE, Material.STONE_AXE}),
+	
 	MACE(new Material[]{Material.MACE}),
 
+	//SPEAR(new Material[]{}),
+	
 	PICKAXE(new Material[]{Material.WOODEN_PICKAXE, Material.DIAMOND_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE,
 			Material.NETHERITE_PICKAXE, Material.STONE_PICKAXE}),
 	
