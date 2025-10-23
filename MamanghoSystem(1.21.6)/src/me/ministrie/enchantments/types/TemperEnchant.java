@@ -1,15 +1,14 @@
 package me.ministrie.enchantments.types;
 
 import org.bukkit.NamespacedKey;
-
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.ministrie.enchantments.CustomEnchantment;
 
-public class HighStepEnchant extends CustomEnchantment{
+public class TemperEnchant extends CustomEnchantment{
 
-	public static final NamespacedKey key = NamespacedKey.minecraft("highstep");
+	public static final NamespacedKey key = NamespacedKey.minecraft("temper");
 	
 	@Override
 	public NamespacedKey getKey(){
@@ -18,7 +17,7 @@ public class HighStepEnchant extends CustomEnchantment{
 
 	@Override
 	public EquipmentSlot[] getSlots(){
-		return new EquipmentSlot[]{EquipmentSlot.FEET};
+		return new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 	}
 
 	@Override

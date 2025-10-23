@@ -1,5 +1,6 @@
 package me.ministrie.enchantments.types;
 
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -7,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import me.ministrie.enchantments.CustomEnchantment;
 import me.ministrie.enchantments.EnchantmentFinder;
@@ -30,7 +32,7 @@ public class FrenzyEnchant extends CustomEnchantment implements ICurse{
 	public double getIncreaseDamage(Player attacker, Entity victim, double damage, int level){
 		double multiplier = EnchantmentFinder.getCurseEnchantCount(attacker);
 		if(multiplier > 0){
-			return damage * (1.0 + (multiplier * 0.05));
+			return damage * (1.0 + (multiplier * 0.03));
 		}
 		return damage;
 	}
@@ -41,22 +43,18 @@ public class FrenzyEnchant extends CustomEnchantment implements ICurse{
 			if(event.getProjectile() instanceof Arrow arrow){
 				double multiplier = EnchantmentFinder.getCurseEnchantCount(player);
 				if(multiplier > 0){
-					arrow.setDamage(arrow.getDamage() * (1.0 + (multiplier * 0.05)));
+					arrow.setDamage(arrow.getDamage() * (1.0 + (multiplier * 0.03)));
 				}
 			}
 		}else if(value instanceof PlayerItemDamageEvent event){
-			event.setDamage(event.getDamage() * 3);
+			ItemStack item = event.getItem();
+			if(item.getType().equals(Material.BOW) || item.getType().equals(Material.CROSSBOW) || item.getType().equals(Material.MACE)){
+				event.setDamage(event.getDamage() * 4);
+			}else{
+				event.setDamage(event.getDamage() * 10);
+			}
 		}
 	}
-	
-	@Override
-	public void onEquip(Player player, EquipmentSlot slot, int level){}
-
-	@Override
-	public void onUnequip(Player player){}
-
-	@Override
-	public void onUnequip(Player player, EquipmentSlot slot, int level){}
 
 	@Override
 	public void onBroken(Player player, EquipmentSlot slot, int level){}

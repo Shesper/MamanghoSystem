@@ -1,6 +1,5 @@
 package me.ministrie.api.player;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.entity.HumanEntity;
@@ -56,13 +55,11 @@ public interface MamanghoPlayer{
 	
 	public PlayerCooldownManager getCooldownManager();
 
-	public void initializeEquipment();
-
-	public void initializeEquipment(List<EquipmentSlot> modifiedSlots);
-
 	public void brokenEquipment(ItemStack broken);
 	
 	public void onTrigger(Object value);
+	
+	public void onTrigger(ItemStack item, Object value);
 	
 	public double getIncreaseDamage(LivingEntity victim, double damage);
 	

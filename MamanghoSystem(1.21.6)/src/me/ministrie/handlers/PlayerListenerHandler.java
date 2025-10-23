@@ -1,8 +1,6 @@
 package me.ministrie.handlers;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -49,20 +47,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.SmithingRecipe;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.inventory.view.AnvilView;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import github.scarsz.discordsrv.util.SchedulerUtil;
-import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
-import io.papermc.paper.event.entity.EntityEquipmentChangedEvent.EquipmentChange;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.configs.MessageSetting;
@@ -119,7 +113,6 @@ public class PlayerListenerHandler implements Listener{
 	public void onJoin(PlayerJoinEvent event){
 		event.joinMessage(null);
 		Player p = event.getPlayer();
-		MamanghoPlayer.getEmpty(p).initializeEquipment();
 		MamanghoSystem.getPlayerManager().loadAndCache(p, new Callback<MamanghoPlayer>(){
 			@Override
 			public void done(MamanghoPlayer player, Throwable error){
@@ -172,20 +165,22 @@ public class PlayerListenerHandler implements Listener{
 		if(event.getEntityType().equals(EntityType.PLAYER)){
 			Player player = (Player) event.getEntity();
 			Enchantment curse = Enchantment.getByKey(EternalBindingCurseEnchant.key);
-			Map<EquipmentSlot, ItemStack> curseItems = Maps.newHashMap();
-			EntityEquipment equipments = player.getEquipment();
-			for(ItemStack armor : equipments.getArmorContents()){
-				if(armor == null || armor.isEmpty()) continue;
-				if(armor.containsEnchantment(curse)){
-					curseItems.put(armor.getType().getEquipmentSlot(), armor.clone());
-					equipments.setItem(armor.getType().getEquipmentSlot(), null);
-					event.getDrops().remove(armor);
+			if(curse != null){
+				Map<EquipmentSlot, ItemStack> curseItems = Maps.newHashMap();
+				EntityEquipment equipments = player.getEquipment();
+				for(ItemStack armor : equipments.getArmorContents()){
+					if(armor == null || armor.isEmpty()) continue;
+					if(armor.containsEnchantment(curse)){
+						curseItems.put(armor.getType().getEquipmentSlot(), armor.clone());
+						equipments.setItem(armor.getType().getEquipmentSlot(), null);
+						event.getDrops().remove(armor);
+					}
 				}
-			}
-			if(!curseItems.isEmpty()){
-				ThreadUtils.runThreadSafe((e) -> {
-					curseItems.forEach((k, v) ->  equipments.setItem(k, v));
-				}, 1);
+				if(!curseItems.isEmpty()){
+					ThreadUtils.runThreadSafe((e) -> {
+						curseItems.forEach((k, v) ->  equipments.setItem(k, v));
+					}, 1);
+				}
 			}
 		}
 	}
@@ -351,7 +346,7 @@ public class PlayerListenerHandler implements Listener{
 	public void onItemDamageEvent(PlayerItemDamageEvent event){
 		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
 		if(player != null){
-			player.onTrigger(event);
+			player.onTrigger(event.getItem(), event);
 		}
 	}
 	
@@ -398,41 +393,6 @@ public class PlayerListenerHandler implements Listener{
 		MamanghoPlayer player = MamanghoPlayer.getPlayer(event.getPlayer());
 		if(player != null){
 			player.brokenEquipment(event.getBrokenItem());
-		}
-	}
-	
-	@EventHandler(priority=EventPriority.MONITOR)
-	public void onChangeEquipment(EntityEquipmentChangedEvent event){
-		if(event.getEntityType().equals(EntityType.PLAYER)){
-			Player changer = (Player) event.getEntity();
-			MamanghoPlayer player = MamanghoPlayer.getOrEmpty(changer);
-			Map<EquipmentSlot, Boolean> checks = Maps.newHashMap();
-			List<EquipmentSlot> modifiedSlots = Lists.newArrayList();
-			for(Entry<EquipmentSlot, EquipmentChange> e : event.getEquipmentChanges().entrySet()){
-				EquipmentSlot k = e.getKey();
-				EquipmentChange v = e.getValue();
-				ItemStack before = v.oldItem();
-				ItemStack after = v.newItem();
-				if(before != null && after != null){
-					boolean same = before.getType().equals(after.getType()) && before.getEnchantments().hashCode() == after.getEnchantments().hashCode();
-					if(same){
-						ItemMeta bmeta = before.getItemMeta();
-						ItemMeta ameta = after.getItemMeta();
-						if(bmeta instanceof Damageable bd && ameta instanceof Damageable ad){
-							if(bd.getDamage() != ad.getDamage()){
-								return;
-							}
-						}
-					}
-				}
-				modifiedSlots.add(k);
-				checks.put(k, true);
-			}
-			if(checks.containsValue(true)){
-				player.initializeEquipment(modifiedSlots);
-			}
-			checks.clear();
-			checks = null;
 		}
 	}
 	

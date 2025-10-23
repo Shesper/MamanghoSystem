@@ -24,15 +24,6 @@ public class EternalBindingCurseEnchant extends CustomEnchantment implements ICu
 	@Override
 	public void onTrigger(Player player, EquipmentSlot slot, Object value, int level){}
 
-	
-	@Override
-	public void onEquip(Player player, EquipmentSlot slot, int level){}
-
-	@Override
-	public void onUnequip(Player player){}
-
-	@Override
-	public void onUnequip(Player player, EquipmentSlot slot, int level){}
 
 	@Override
 	public void onBroken(Player player, EquipmentSlot slot, int level){}

@@ -1,17 +1,13 @@
 package me.ministrie.enchantments.types;
 
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.attribute.AttributeModifier.Operation;
+
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.EquipmentSlotGroup;
 
 import me.ministrie.enchantments.CustomEnchantment;
 import me.ministrie.enchantments.ICurse;
@@ -51,25 +47,5 @@ public class WrathCurseEnchant extends CustomEnchantment implements ICurse{
 	}
 	
 	@Override
-	public void onEquip(Player player, EquipmentSlot slot, int level){
-		AttributeInstance attribute = player.getAttribute(Attribute.BURNING_TIME);
-		if(attribute.getModifier(key) != null) return;
-		attribute.addModifier(new AttributeModifier(key, Integer.MAX_VALUE, Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS));
-	}
-
-	@Override
-	public void onUnequip(Player player){
-		this.onUnequip(player, null, 0);
-	}
-
-	@Override
-	public void onUnequip(Player player, EquipmentSlot slot, int level){
-		AttributeInstance attribute = player.getAttribute(Attribute.BURNING_TIME);
-		attribute.removeModifier(key);
-	}
-
-	@Override
-	public void onBroken(Player player, EquipmentSlot slot, int level){
-		this.onUnequip(player, slot, level);
-	}
+	public void onBroken(Player player, EquipmentSlot slot, int level){}
 }

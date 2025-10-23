@@ -35,6 +35,7 @@ import me.ministrie.enchantments.types.RobustEnchant;
 import me.ministrie.enchantments.types.SprintEnchant;
 import me.ministrie.enchantments.types.StoneableCurseEnchant;
 import me.ministrie.enchantments.types.StrengthCurseEnchant;
+import me.ministrie.enchantments.types.TemperEnchant;
 import me.ministrie.enchantments.types.TimberEnchant;
 import me.ministrie.enchantments.types.TwohandsEnchant;
 import me.ministrie.enchantments.types.VoidCapeEnchant;
@@ -71,6 +72,7 @@ public class EnchantmentFinder{
 		m.put(GiantEnchant.key, new GiantEnchant());
 		m.put(DwarfEnchant.key, new DwarfEnchant());
 		m.put(HeavyArmorEnchant.key, new HeavyArmorEnchant());
+		m.put(TemperEnchant.key, new TemperEnchant());
 		m.put(AntiGravityEnchant.key, new AntiGravityEnchant());
 		m.put(FrenzyEnchant.key, new FrenzyEnchant());
 		m.put(GeasGiftEnchant.key, new GeasGiftEnchant());

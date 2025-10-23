@@ -12,12 +12,6 @@ public abstract class CustomEnchantment{
 	
 	public abstract EquipmentSlot[] getSlots();
 	
-	public abstract void onEquip(Player player, EquipmentSlot slot, int level);
-	
-	public abstract void onUnequip(Player player);
-	
-	public abstract void onUnequip(Player player, EquipmentSlot slot, int level);
-	
 	public abstract void onBroken(Player player, EquipmentSlot slot, int level);
 	
 	public void onTrigger(Player player, EquipmentSlot slot, Object value, int level){}

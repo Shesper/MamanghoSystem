@@ -41,15 +41,6 @@ public class RobustEnchant extends CustomEnchantment{
 			event.setAmount(event.getAmount()*scale);
 		}
 	}
-	
-	@Override
-	public void onEquip(Player player, EquipmentSlot slot, int level){}
-
-	@Override
-	public void onUnequip(Player player){}
-
-	@Override
-	public void onUnequip(Player player, EquipmentSlot slot, int level){}
 
 	@Override
 	public void onBroken(Player player, EquipmentSlot slot, int level){}
