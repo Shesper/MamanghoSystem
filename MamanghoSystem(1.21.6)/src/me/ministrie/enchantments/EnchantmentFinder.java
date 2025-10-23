@@ -19,6 +19,7 @@ import me.ministrie.enchantments.types.AntiGravityEnchant;
 import me.ministrie.enchantments.types.DestructEnchant;
 import me.ministrie.enchantments.types.DiggingSpeedEnchant;
 import me.ministrie.enchantments.types.DwarfEnchant;
+import me.ministrie.enchantments.types.EarplugEnchant;
 import me.ministrie.enchantments.types.EternalBindingCurseEnchant;
 import me.ministrie.enchantments.types.FrenzyEnchant;
 import me.ministrie.enchantments.types.GeasGiftEnchant;
@@ -78,6 +79,7 @@ public class EnchantmentFinder{
 		m.put(GeasGiftEnchant.key, new GeasGiftEnchant());
 		m.put(LightningStrikeEnchant.key, new LightningStrikeEnchant());
 		m.put(WitheringStingEnchant.key, new WitheringStingEnchant());
+		m.put(EarplugEnchant.key, new EarplugEnchant());
 		registry = ImmutableMap.copyOf(m);
 		Map<EquipmentSlot, List<CustomEnchantment>> c = Maps.newHashMap();
 		registry.forEach((k, v) -> {
