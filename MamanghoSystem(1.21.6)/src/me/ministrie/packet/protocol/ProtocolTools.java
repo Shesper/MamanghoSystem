@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryAnvil;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.view.AnvilView;
@@ -29,7 +28,9 @@ import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import me.ministrie.api.player.MamanghoPlayer;
 import me.ministrie.main.MamanghoSystem;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.PacketPlayOutWindowData;
+import net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AnvilMenu;
 
 public class ProtocolTools{
 
@@ -39,11 +40,14 @@ public class ProtocolTools{
 				if(viewer.isOnline()){
 					AnvilView view = event.getView();
 					int cost = view.getRepairCost();
-					CraftInventoryAnvil gui = (CraftInventoryAnvil) event.getInventory();
-					PacketPlayOutWindowData packet = new PacketPlayOutWindowData(gui.getInventory().ap_(), 0, cost);
-					sendPacket(viewer, packet);
+					if(cost >= 40) cost = 39;
+					ServerPlayer sp = ((CraftPlayer) viewer).getHandle();
+					if(sp.containerMenu instanceof AnvilMenu anvilMenu){
+						ClientboundContainerSetDataPacket packet = new ClientboundContainerSetDataPacket(anvilMenu.containerId, 0, cost);
+						sendPacket(viewer, packet);
+					}
 				}
-			});
+			}, 1);
 		}
 	}
 	
@@ -63,7 +67,7 @@ public class ProtocolTools{
 		
 		PacketContainer addPacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
 		addPacket.getPlayerInfoActions().write(0, Sets.newHashSet(PlayerInfoAction.ADD_PLAYER));
-		addPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(infoData));
+		addPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(infoData));
 		
 		for(Player other : Bukkit.getOnlinePlayers()){
 			if(user.getPlayer().getUniqueId().equals(other.getUniqueId())) continue;
@@ -94,7 +98,7 @@ public class ProtocolTools{
 			
 			PacketContainer addPacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
 			addPacket.getPlayerInfoActions().write(0, Sets.newHashSet(PlayerInfoAction.ADD_PLAYER));
-			addPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(infoData));
+			addPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(infoData));
 			
 			protocolManager.sendServerPacket(listener, removePacket);
 			listener.hidePlayer(MamanghoSystem.getInstance(), other);
@@ -105,6 +109,6 @@ public class ProtocolTools{
 	
 	public static void sendPacket(Player player, Packet<?> packet){
 		CraftPlayer p = (CraftPlayer) player;
-		p.getHandle().g.a(packet);
+		p.getHandle().connection.send(packet);
 	}
 }

@@ -1,6 +1,7 @@
 package me.ministrie.packet.protocol.listener;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -24,7 +25,9 @@ import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 
 import me.ministrie.api.data.player.PlayerData;
 import me.ministrie.api.player.MamanghoPlayer;
+import me.ministrie.configs.ServerSetting;
 import me.ministrie.handlers.data.player.PlayerDataHandler.DataEnum;
+import me.ministrie.main.MamanghoSystem;
 import me.ministrie.packet.protocol.ContainerLocation;
 import me.ministrie.skins.BowSkin;
 import me.ministrie.skins.WeaponSkin;
@@ -41,21 +44,25 @@ public class SkinListener extends PacketAdapter{
 		PacketContainer packet = event.getPacket();
 		Player player = event.getPlayer();
 		if(event.getPacketType().equals(PacketType.Play.Server.ENTITY_EQUIPMENT)){
-			Entity entity = packet.getEntityModifier(event).read(0);
-			if(entity instanceof Player target){
-				MamanghoPlayer user = MamanghoPlayer.getPlayer(target);
-				if(user == null) return;
-				List<Pair<ItemSlot, ItemStack>> slots = packet.getSlotStackPairLists().read(0);
-				if(!slots.isEmpty()){
-					boolean hideLayer = user.getData().getData(DataEnum.HIDE_ARMOR_LAYER);
-					for(Pair<ItemSlot, ItemStack> slot : slots){
-						if(slot.getFirst().equals(ItemSlot.MAINHAND) || slot.getFirst().equals(ItemSlot.OFFHAND)){
-							slot.setSecond(this.computeStack(user.getData(), slot.getSecond()));
-						}else{
-							if(hideLayer) slot.setSecond(this.hideLayerArmorStack(slot.getSecond()));
+			if(ServerSetting.TOGGLE_PACKET_SET_EQUIPMENT.<Boolean>getValue()){
+				Entity entity = packet.getEntityModifier(event).read(0);
+				if(entity instanceof Player target){
+					MamanghoPlayer user = MamanghoPlayer.getPlayer(target);
+					if(user == null) return;
+					List<Pair<ItemSlot, ItemStack>> slots = packet.getSlotStackPairLists().read(0);
+					if(!slots.isEmpty()){
+						boolean hideLayer = user.getData().getData(DataEnum.HIDE_ARMOR_LAYER);
+						for(Pair<ItemSlot, ItemStack> slot : slots){
+							if(slot.getFirst().equals(ItemSlot.MAINHAND) || slot.getFirst().equals(ItemSlot.OFFHAND)){
+								slot.setSecond(this.computeStack(user.getData(), slot.getSecond()));
+							}else{
+								if(hideLayer) slot.setSecond(this.hideLayerArmorStack(slot.getSecond()));
+							}
 						}
+						packet.getSlotStackPairLists().write(0, slots);
+						event.setPacket(packet);
 					}
-					packet.getSlotStackPairLists().write(0, slots);
+					MamanghoSystem.logging(Level.INFO, "[SkinListener] ENTITY_EQUIPMENT packet processed. target: " + target.getName() + ", slotSize: " + slots.size());
 				}
 			}
 		}else if(event.getPacketType().equals(PacketType.Play.Server.SET_SLOT)){
@@ -78,7 +85,9 @@ public class SkinListener extends PacketAdapter{
 				this.compute(user.getData(), item);
 				if(hideLayer) this.hideLayerArmor(item);
 			}
-			
+			packet.getItemModifier().write(0, item);
+			event.setPacket(packet);
+			MamanghoSystem.logging(Level.INFO, "[SkinListener] SET_SLOT packet processed. slot: " + slot + ", containerID: " + containerID);
 		}else if(event.getPacketType().equals(PacketType.Play.Server.WINDOW_ITEMS)){
 			if(player.getGameMode().equals(GameMode.CREATIVE)) return;
 			MamanghoPlayer user = MamanghoPlayer.getPlayer(player);
@@ -106,6 +115,8 @@ public class SkinListener extends PacketAdapter{
 				}
 			}
 			packet.getItemListModifier().write(0, copys);
+			event.setPacket(packet);
+			MamanghoSystem.logging(Level.INFO, "[SkinListener] WINDOW_ITEMS packet processed. size: " + copys.size() + " containerID: " + containerID);
 		}
 	}
 	

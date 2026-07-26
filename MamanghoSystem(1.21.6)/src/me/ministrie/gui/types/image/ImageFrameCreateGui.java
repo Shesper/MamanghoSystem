@@ -4,6 +4,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,10 +22,16 @@ import org.bukkit.util.Vector;
 
 import com.google.common.collect.Maps;
 import com.loohp.imageframe.ImageFrame;
+import com.loohp.imageframe.libs.net.kyori.adventure.text.format.NamedTextColor;
 import com.loohp.imageframe.objectholders.DitheringType;
 import com.loohp.imageframe.objectholders.ImageMap;
-import com.loohp.imageframe.objectholders.URLAnimatedImageMap;
-import com.loohp.imageframe.objectholders.URLStaticImageMap;
+import com.loohp.imageframe.objectholders.ImageMapCreationTask;
+import com.loohp.imageframe.objectholders.ImageMapLoader;
+import com.loohp.imageframe.objectholders.ImageMapLoaders;
+import com.loohp.imageframe.objectholders.URLImageMap;
+import com.loohp.imageframe.objectholders.URLImageMapCreateInfo;
+import com.loohp.imageframe.utils.CommandSenderUtils;
+import com.loohp.imageframe.utils.ComponentUtils;
 import com.loohp.imageframe.utils.HTTPRequestUtils;
 
 import me.ministrie.api.player.MamanghoPlayer;
@@ -212,31 +219,37 @@ public class ImageFrameCreateGui implements ProcessScreen{
 			MessageSetting.SYSTEM_GUI_PROCESS_CREATE_IMAGE.sendMessages(viewer);
 			SoundSetting.DEFAULT_GUI_PAGE_CLICK.playSound(viewer);
 			MamanghoSystem.getTaskChainFactory().newChain().<Pair<Boolean, ImageMap>>asyncFirstCallback((result) -> {
-				ImageMap imageMap;
 				String url = this.getValue(2);
 				if (HTTPRequestUtils.getContentSize(url) > ImageFrame.maxImageFileSize) {
-					viewer.getPlayer().sendMessage(ImageFrame.messageImageOverMaxFileSize.replace("{Size}", Long.toString(ImageFrame.maxImageFileSize)));
+					CommandSenderUtils.sendMessage(viewer.getPlayer(), ComponentUtils.translatable("imageframe.messages.image_over_max_file_size", ImageFrame.maxImageFileSize).color(NamedTextColor.RED));
+					Bukkit.getScheduler().runTask(MamanghoSystem.getInstance(), () -> {
+						ItemStack item = new ItemStack(Material.MAP, this.width*this.height);
+						HashMap<Integer, ItemStack> e = viewer.getPlayer().getInventory().addItem(item);
+						for(ItemStack i : e.values()){
+							viewer.getPlayer().getWorld().dropItem(viewer.getPlayer().getEyeLocation(), i).setVelocity(new Vector(0, 0, 0));
+						}
+					});
 					return;
-				} 
-				String imageType = HTTPRequestUtils.getContentType(url);
-				if (imageType == null)
-					imageType = URLConnection.guessContentTypeFromName(url); 
-				if (imageType == null) {
-					imageType = "";
-				}else{
-					imageType = imageType.trim();
 				}
 				try{
-					if (imageType.equals("image/gif")){
-						imageMap = URLAnimatedImageMap.create(ImageFrame.imageMapManager, this.<String>getValue(1), url, width, height, DitheringType.NEAREST_COLOR, viewer.getPlayer().getUniqueId()).get();
-					} else {
-						imageMap = URLStaticImageMap.create(ImageFrame.imageMapManager, this.<String>getValue(1), url, width, height, DitheringType.NEAREST_COLOR, viewer.getPlayer().getUniqueId()).get();
-					} 
-					ImageFrame.imageMapManager.addMap(imageMap);
-					result.accept(Pair.of(true, imageMap));
-				} catch (Exception e) {
+					AtomicReference<String> imageType = new AtomicReference<String>(HTTPRequestUtils.getContentType(url));
+					if (imageType.get() == null) imageType.set(URLConnection.guessContentTypeFromName(url)); 
+					if (imageType.get() == null) {
+						imageType.set("");
+					}else{
+						imageType.set(imageType.get().trim());
+					}
+					ImageMapCreationTask<ImageMap> creationTask = ImageFrame.imageMapCreationTaskManager.enqueue(viewer.getPlayer().getUniqueId(), this.getValue(1), () -> {
+						ImageMapLoader<? extends URLImageMap, URLImageMapCreateInfo> loader = ImageMapLoaders.getLoader(URLImageMap.class, URLImageMapCreateInfo.class, imageType.get(), viewer.getPlayer());
+	                    return loader.create(new URLImageMapCreateInfo(ImageFrame.imageMapManager, this.getValue(1), url, width, height, DitheringType.NEAREST_COLOR, viewer.getPlayer().getUniqueId())).get();
+					});
+					ImageMap imageMap = creationTask.get();
+	                ImageFrame.imageMapManager.addMap(imageMap);
+	                creationTask.complete(ComponentUtils.translatable("imageframe.messages.image_map_created").color(NamedTextColor.GREEN));
+	                result.accept(Pair.of(true, imageMap));
+				}catch(Exception e){
 					e.printStackTrace();
-					result.accept(Pair.of(false, null));
+	                result.accept(Pair.of(false, null));
 				}
 			}).asyncLast(pair -> {
 				boolean result = pair.getKey();
@@ -248,11 +261,13 @@ public class ImageFrameCreateGui implements ProcessScreen{
 					}
 				}else{
 					MessageSetting.SYSTEM_GUI_PROCESSED_FAILED_CREATE_IMAGE.sendMessages(viewer);
-					ItemStack item = new ItemStack(Material.MAP, this.width*this.height);
-					HashMap<Integer, ItemStack> e = viewer.getPlayer().getInventory().addItem(item);
-					for(ItemStack i : e.values()){
-						viewer.getPlayer().getWorld().dropItem(viewer.getPlayer().getEyeLocation(), i).setVelocity(new Vector(0, 0, 0));
-					}
+					Bukkit.getScheduler().runTask(MamanghoSystem.getInstance(), () -> {
+						ItemStack item = new ItemStack(Material.MAP, this.width*this.height);
+						HashMap<Integer, ItemStack> e = viewer.getPlayer().getInventory().addItem(item);
+						for(ItemStack i : e.values()){
+							viewer.getPlayer().getWorld().dropItem(viewer.getPlayer().getEyeLocation(), i).setVelocity(new Vector(0, 0, 0));
+						}
+					});
 				}
 			}).execute();
 		}else{

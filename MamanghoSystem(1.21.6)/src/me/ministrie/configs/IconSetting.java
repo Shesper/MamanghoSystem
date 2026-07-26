@@ -52,7 +52,7 @@ public enum IconSetting{
 	IMAGE_FRAME_URL_ICON("image-frame.url", "IRON_INGOT:8", "&f이미지 URL 설정", "&f클릭 시 채팅창에 설정할 이미지 URL을 입력하여|&f출력될 이미지를 설정합니다."),
 	
 	IMAGE_FRAME_RESULT_ICON("image-frame.result", "IRON_INGOT:9", "&f이미지 맵 생성 최종 확인" ,"&f|&f이미지 크기: &a{0} &fx &a{1} &f(가로, 세로)|&f이미지 이름: {2}|&f이미지 URL: &a{3}|&f|&f입력된 정보들입니다.|&f위 정보를 토대로 이미지맵을 생성하려면|&a우클릭&f해주세요."),
-	IMAGE_FRAME_IMG_INFO_ICON("image-frame.image-info", "PAPER:-1", "&f이미지 정보", "&f|&f이미지 아이디: {0}|&f이미지 크기: &a{1} x {2} &f(가로, 세로)|&f이미지 이름: {3}|&f||&a좌클릭: &f이미지 맵 가져오기 (빈 지도 {4}개 필요)|&c우클릭: &f이미지 삭제"),
+	IMAGE_FRAME_IMG_INFO_ICON("image-frame.image-info", "PAPER:-1", "&f이미지 정보", "&f|&f이미지 아이디: {0}|&f이미지 크기: &a{1} x {2} &f(가로, 세로)|&f이미지 이름: {3}|&f|&a좌클릭: &f이미지 맵 가져오기 (빈 지도 {4}개 필요)|&c우클릭: &f이미지 삭제"),
 	
 	SKIN_MELEE_WEAPON_ICON("skin.melee-weapon-icon", "DIAMOND_SWORD:-1", "&f근접 무기/도구 스킨 설정", "&f클릭 시 근접 무기/도구 관련 스킨을 둘러봅니다"),
 	SKIN_BOW_ICON("skin.bow-icon", "BOW:-1", "&f활 스킨 설정", "&f클릭 시 활 관련 스킨을 둘러봅니다"),

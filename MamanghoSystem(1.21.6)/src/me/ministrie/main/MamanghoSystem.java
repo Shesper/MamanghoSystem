@@ -1,5 +1,7 @@
 package me.ministrie.main;
 
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -124,6 +126,17 @@ public class MamanghoSystem extends JavaPlugin{
 	
 	public static EntityAttributeModifier getModifier(){
 		return modifier;
+	}
+	
+	public static void logging(Level level, String msg){
+		if(!ServerSetting.DEBUGGING_LOGGER.<Boolean>getValue()) return;
+		if(level.equals(Level.INFO)){
+			MamanghoSystem.getInstance().getLogger().info(msg);
+		}else if(level.equals(Level.WARNING)){
+			MamanghoSystem.getInstance().getLogger().warning(msg);
+		}else if(level.equals(Level.SEVERE)){
+			MamanghoSystem.getInstance().getLogger().severe(msg);
+		}
 	}
 	
 	private void bukkitCommandLoad(){

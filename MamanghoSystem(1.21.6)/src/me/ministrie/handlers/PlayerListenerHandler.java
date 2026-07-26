@@ -96,7 +96,7 @@ public class PlayerListenerHandler implements Listener{
 		}
 		if(itemCost >= 40 || viewCost >= 40){
 			view.setRepairCost(39);
-			view.setMaximumRepairCost(99);
+			view.setMaximumRepairCost(99999);
 			ProtocolTools.updateAnvilInventory(event);
 		}
 	}

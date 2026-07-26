@@ -33,7 +33,7 @@ import me.ministrie.thread.ThreadUtils;
 import me.ministrie.utils.component.ComponentUtil;
 
 public class ImageMapListGui implements Screen, ButtonAction<ImageMap>{
-
+	
 	private MamanghoPlayer viewer;
 	private ScreenHolder holder;
 	private Screen previous;
@@ -79,7 +79,6 @@ public class ImageMapListGui implements Screen, ButtonAction<ImageMap>{
 	protected Inventory getPanel(){
 		Inventory panel = Bukkit.createInventory(holder, 54, ComponentUtil.parseComponent("내 이미지 맵 정보 관리"));
 		this.actions = new ImageMap[panel.getSize()];
-		
 		Set<ImageMap> list = ImageFrame.imageMapManager.getFromCreator(viewer.getPlayer().getUniqueId());
 		int slot = 0;
 		if(list != null){
