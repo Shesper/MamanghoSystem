@@ -25,6 +25,7 @@ import me.ministrie.enchantments.types.FrenzyEnchant;
 import me.ministrie.enchantments.types.GeasGiftEnchant;
 import me.ministrie.enchantments.types.GiantEnchant;
 import me.ministrie.enchantments.types.GlowArrowEnchant;
+import me.ministrie.enchantments.types.GreedEnchant;
 import me.ministrie.enchantments.types.HealthBoostEnchant;
 import me.ministrie.enchantments.types.HeavyArmorEnchant;
 import me.ministrie.enchantments.types.HighStepEnchant;
@@ -77,6 +78,7 @@ public class EnchantmentFinder{
 		m.put(AntiGravityEnchant.key, new AntiGravityEnchant());
 		m.put(FrenzyEnchant.key, new FrenzyEnchant());
 		m.put(GeasGiftEnchant.key, new GeasGiftEnchant());
+		m.put(GreedEnchant.key, new GreedEnchant());
 		m.put(LightningStrikeEnchant.key, new LightningStrikeEnchant());
 		m.put(WitheringStingEnchant.key, new WitheringStingEnchant());
 		m.put(EarplugEnchant.key, new EarplugEnchant());

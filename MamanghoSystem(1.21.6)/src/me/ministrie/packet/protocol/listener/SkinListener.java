@@ -3,7 +3,9 @@ package me.ministrie.packet.protocol.listener;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -36,7 +38,7 @@ import me.ministrie.skins.WeaponType;
 public class SkinListener extends PacketAdapter{
 
 	public SkinListener(Plugin plugin){
-		super(plugin, PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS, PacketType.Play.Server.ENTITY_EQUIPMENT);
+		super(plugin, PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.SET_CURSOR_ITEM, PacketType.Play.Server.WINDOW_ITEMS, PacketType.Play.Server.ENTITY_EQUIPMENT);
 	}
 	
 	@Override
@@ -65,6 +67,25 @@ public class SkinListener extends PacketAdapter{
 					MamanghoSystem.logging(Level.INFO, "[SkinListener] ENTITY_EQUIPMENT packet processed. target: " + target.getName() + ", slotSize: " + slots.size());
 				}
 			}
+		}else if(event.getPacketType().equals(PacketType.Play.Server.SET_CURSOR_ITEM)){
+			if(player.getGameMode().equals(GameMode.CREATIVE)) return;
+			MamanghoPlayer user = MamanghoPlayer.getPlayer(player);
+			if(user == null) return;
+			StructureModifier<ItemStack> sm = packet.getItemModifier();
+			ItemStack item = sm.read(0);
+			if(item != null && !item.isEmpty()){
+				ItemStack clone = item.clone();
+				this.compute(user.getData(), clone);
+				packet.getItemModifier().write(0, clone);
+				Bukkit.getScheduler().runTask(MamanghoSystem.getInstance(), () -> {
+					ItemStack cursor = player.getItemOnCursor();
+					if(cursor == null || cursor.isEmpty()){
+						player.setItemOnCursor(ItemStack.of(Material.AIR));
+					}
+				});
+			}
+			event.setPacket(packet);
+			MamanghoSystem.logging(Level.INFO, "[SkinListener] SET_CURSOR_ITEM packet processed.");
 		}else if(event.getPacketType().equals(PacketType.Play.Server.SET_SLOT)){
 			if(player.getGameMode().equals(GameMode.CREATIVE)) return;
 			MamanghoPlayer user = MamanghoPlayer.getPlayer(player);

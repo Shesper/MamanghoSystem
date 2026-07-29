@@ -7,6 +7,18 @@ public class MathUtil{
 
 	private static final SecureRandom random = new SecureRandom();
 	
+	public static int getRandomInt(int min, int max){
+		return min + (int)(Math.random() * ((max - min) + 1));
+	}
+	
+	public static double getRandomDouble(double min, double max){
+		return (double) (getRandomInt((int)(min * 100.0), (int)(max * 100.0)) * 0.01);
+	}
+	
+	public static float getRandomFloat(float min, float max){
+		return (float) (getRandomInt((int)(min * 100.0), (int)(max * 100.0)) * 0.01);
+	}
+	
 	public static int underZero(int value){
 		if(value <= 0) return 0;
 		return value;

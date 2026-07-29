@@ -1,11 +1,14 @@
 package me.ministrie.enchantments.types;
 
+import java.util.logging.Level;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.ministrie.enchantments.CustomEnchantment;
+import me.ministrie.main.MamanghoSystem;
 
 public class GreedEnchant extends CustomEnchantment{
 
@@ -15,7 +18,6 @@ public class GreedEnchant extends CustomEnchantment{
 	public NamespacedKey getKey(){
 		return key;
 	}
-
 
 	@Override
 	public EquipmentSlot[] getSlots(){
@@ -28,6 +30,7 @@ public class GreedEnchant extends CustomEnchantment{
 		if(value instanceof PlayerExpChangeEvent event){
 			int exp = event.getAmount();
 			int result = Double.valueOf(((double) exp) * (1.0 + ((double)level) * 0.1)).intValue();
+			MamanghoSystem.logging(Level.INFO, "change exp in enchantment greed. before: " + exp  + ", after: " + result + ", level: " + level);
 			event.setAmount(result);
 		}
 	}
